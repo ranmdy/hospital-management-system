@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox alignment="CENTER" spacing="15.0" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.ehospital.DoctorDashboardController">
+    <padding>
+        <Insets bottom="30.0" left="40.0" right="40.0" top="30.0"/>
+    </padding>
+
+    <Label text="Doctor Dashboard" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
+    <Label fx:id="welcomeLabel" style="-fx-font-size: 14;"/>
+    <Button text="Logout" onAction="#onLogout"/>
+</VBox>
