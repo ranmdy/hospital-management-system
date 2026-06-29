@@ -2,15 +2,52 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" spacing="15.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.ehospital.AdminDashboardController">
-    <padding>
-        <Insets bottom="30.0" left="40.0" right="40.0" top="30.0"/>
-    </padding>
+<HBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.ehospital.AdminDashboardController"
+      stylesheets="@styles.css">
 
-    <Label text="Hospital Admin Dashboard" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
-    <Label fx:id="welcomeLabel" style="-fx-font-size: 14;"/>
-    <Button text="Logout" onAction="#onLogout"/>
-</VBox>
+    <!-- SIDEBAR -->
+    <VBox styleClass="sidebar" spacing="3">
+        <HBox alignment="CENTER_LEFT" spacing="11">
+            <Label text="+" styleClass="sidebar-logo"/>
+            <Label text="Ranmdy" styleClass="sidebar-brand"/>
+        </HBox>
+        <Region prefHeight="20"/>
+
+        <Button text="Transfer requests" styleClass="nav-item-active" maxWidth="Infinity"/>
+        <Button text="Patient records" styleClass="nav-item" maxWidth="Infinity"/>
+
+        <Region VBox.vgrow="ALWAYS"/>
+
+        <VBox styleClass="sidebar-divider" spacing="8">
+            <HBox alignment="CENTER_LEFT" spacing="11">
+                <Label fx:id="avatarLabel" styleClass="avatar, avatar-blue"/>
+                <VBox>
+                    <Label fx:id="userNameLabel" styleClass="sidebar-user-name"/>
+                    <Label text="Hospital Admin" styleClass="sidebar-user-sub"/>
+                </VBox>
+            </HBox>
+            <Button text="Log out" styleClass="btn-logout" onAction="#onLogout"/>
+        </VBox>
+    </VBox>
+
+    <!-- MAIN -->
+    <VBox HBox.hgrow="ALWAYS">
+        <HBox styleClass="topbar" alignment="CENTER_LEFT">
+            <VBox>
+                <Label text="Transfer Requests" styleClass="topbar-title"/>
+                <Label text="Manage incoming transfers" styleClass="topbar-sub"/>
+            </VBox>
+        </HBox>
+
+        <VBox styleClass="content-area" VBox.vgrow="ALWAYS" spacing="18">
+            <Label fx:id="welcomeLabel" style="-fx-font-size: 26; -fx-font-weight: bold; -fx-text-fill: #1A1C20;"/>
+            <VBox styleClass="card" spacing="8">
+                <Label text="INCOMING TRANSFERS" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
+                <Label text="No transfer requests yet. Transfers from doctors will appear here." style="-fx-font-size: 14; -fx-text-fill: #9A9EA5;" wrapText="true"/>
+            </VBox>
+        </VBox>
+    </VBox>
+</HBox>

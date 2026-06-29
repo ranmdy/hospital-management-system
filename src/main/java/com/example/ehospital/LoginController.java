@@ -4,16 +4,43 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class LoginController {
 
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
-    @FXML private RadioButton patientRadio;
-    @FXML private RadioButton doctorRadio;
-    @FXML private RadioButton adminRadio;
+    @FXML private VBox patientCard;
+    @FXML private VBox doctorCard;
+    @FXML private VBox adminCard;
     @FXML private Label messageLabel;
+
+    private String selectedRole = "patient";
+
+    @FXML
+    private void selectPatient() {
+        selectedRole = "patient";
+        patientCard.getStyleClass().setAll("role-card-active");
+        doctorCard.getStyleClass().setAll("role-card");
+        adminCard.getStyleClass().setAll("role-card");
+    }
+
+    @FXML
+    private void selectDoctor() {
+        selectedRole = "doctor";
+        patientCard.getStyleClass().setAll("role-card");
+        doctorCard.getStyleClass().setAll("role-card-active");
+        adminCard.getStyleClass().setAll("role-card");
+    }
+
+    @FXML
+    private void selectAdmin() {
+        selectedRole = "admin";
+        patientCard.getStyleClass().setAll("role-card");
+        doctorCard.getStyleClass().setAll("role-card");
+        adminCard.getStyleClass().setAll("role-card-active");
+    }
 
     @FXML
     private void onLogin() {
@@ -25,7 +52,7 @@ public class LoginController {
             return;
         }
 
-        if (patientRadio.isSelected()) {
+        if (selectedRole.equals("patient")) {
             PatientDAO dao = new PatientDAO();
             Patient patient = dao.login(email, password);
             if (patient != null) {
@@ -34,7 +61,7 @@ public class LoginController {
             } else {
                 messageLabel.setText("Wrong email or password.");
             }
-        } else if (doctorRadio.isSelected()) {
+        } else if (selectedRole.equals("doctor")) {
             DoctorDAO dao = new DoctorDAO();
             Doctor doctor = dao.login(email, password);
             if (doctor != null) {
@@ -43,7 +70,7 @@ public class LoginController {
             } else {
                 messageLabel.setText("Wrong email or password.");
             }
-        } else if (adminRadio.isSelected()) {
+        } else if (selectedRole.equals("admin")) {
             HospitalAdminDAO dao = new HospitalAdminDAO();
             HospitalAdmin admin = dao.login(email, password);
             if (admin != null) {
@@ -64,7 +91,9 @@ public class LoginController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Stage stage = (Stage) emailField.getScene().getWindow();
-            stage.setScene(new Scene(loader.load(), 400, 500));
+            stage.setScene(new Scene(loader.load()));
+            stage.setWidth(900);
+            stage.setHeight(600);
         } catch (Exception e) {
             System.out.println("Could not load screen: " + e.getMessage());
         }

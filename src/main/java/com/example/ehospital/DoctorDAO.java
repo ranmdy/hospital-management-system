@@ -35,13 +35,7 @@ public class DoctorDAO {
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
-                Doctor doctor = new Doctor();
-                doctor.setId(rs.getInt("id"));
-                doctor.setName(rs.getString("name"));
-                doctor.setEmail(rs.getString("email"));
-                doctor.setSpecialty(rs.getString("specialty"));
-                doctor.setLicenseNumber(rs.getString("license_number"));
-                doctor.setStatus(rs.getString("status"));
+                Doctor doctor = buildDoctor(rs);
                 conn.close();
                 return doctor;
             }
@@ -50,5 +44,78 @@ public class DoctorDAO {
             System.out.println("Login failed: " + e.getMessage());
         }
         return null;
+    }
+
+    public Doctor getById(int id) {
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            String sql = "SELECT * FROM doctors WHERE id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, id);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Doctor d = buildDoctor(rs);
+                conn.close();
+                return d;
+            }
+            conn.close();
+        } catch (Exception e) {
+            System.out.println("Get doctor failed: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public Doctor findAvailableBySpecialty(String specialty) {
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            // try exact specialty match first (case-insensitive)
+            String sql = "SELECT * FROM doctors WHERE LOWER(specialty) = LOWER(?) AND status = 'available' LIMIT 1";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, specialty);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Doctor d = buildDoctor(rs);
+                conn.close();
+                return d;
+            }
+            // fallback: any available doctor
+            sql = "SELECT * FROM doctors WHERE status = 'available' LIMIT 1";
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                Doctor d = buildDoctor(rs);
+                conn.close();
+                return d;
+            }
+            conn.close();
+        } catch (Exception e) {
+            System.out.println("Find doctor failed: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public void updateStatus(int doctorId, String status) {
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            String sql = "UPDATE doctors SET status = ? WHERE id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, status);
+            stmt.setInt(2, doctorId);
+            stmt.executeUpdate();
+            conn.close();
+        } catch (Exception e) {
+            System.out.println("Update status failed: " + e.getMessage());
+        }
+    }
+
+    private Doctor buildDoctor(ResultSet rs) throws Exception {
+        Doctor d = new Doctor();
+        d.setId(rs.getInt("id"));
+        d.setName(rs.getString("name"));
+        d.setEmail(rs.getString("email"));
+        d.setSpecialty(rs.getString("specialty"));
+        d.setLicenseNumber(rs.getString("license_number"));
+        d.setStatus(rs.getString("status"));
+        return d;
     }
 }

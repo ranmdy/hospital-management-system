@@ -10,8 +10,8 @@ public class HelloApplication extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("login-view.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 400, 500);
-        stage.setTitle("E-HealthCare Management");
+        Scene scene = new Scene(fxmlLoader.load(), 900, 600);
+        stage.setTitle("Ranmdy Healthcare Center");
         stage.setScene(scene);
         stage.show();
     }

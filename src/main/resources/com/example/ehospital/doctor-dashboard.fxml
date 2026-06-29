@@ -2,15 +2,100 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" spacing="15.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.ehospital.DoctorDashboardController">
-    <padding>
-        <Insets bottom="30.0" left="40.0" right="40.0" top="30.0"/>
-    </padding>
+<HBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.ehospital.DoctorDashboardController"
+      stylesheets="@styles.css">
 
-    <Label text="Doctor Dashboard" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
-    <Label fx:id="welcomeLabel" style="-fx-font-size: 14;"/>
-    <Button text="Logout" onAction="#onLogout"/>
-</VBox>
+    <!-- SIDEBAR -->
+    <VBox styleClass="sidebar" spacing="3">
+        <HBox alignment="CENTER_LEFT" spacing="11">
+            <Label text="+" styleClass="sidebar-logo"/>
+            <Label text="Ranmdy" styleClass="sidebar-brand"/>
+        </HBox>
+        <Region prefHeight="20"/>
+
+        <Button text="Dashboard" styleClass="nav-item-active" maxWidth="Infinity"/>
+        <Button text="Consultation" styleClass="nav-item" maxWidth="Infinity"/>
+        <Button text="Admission" styleClass="nav-item" maxWidth="Infinity"/>
+        <Button text="Transfer" styleClass="nav-item" maxWidth="Infinity"/>
+        <Button text="Prescription" styleClass="nav-item" maxWidth="Infinity"/>
+
+        <Region VBox.vgrow="ALWAYS"/>
+
+        <VBox styleClass="sidebar-divider" spacing="8">
+            <HBox alignment="CENTER_LEFT" spacing="11">
+                <Label fx:id="avatarLabel" styleClass="avatar, avatar-blue"/>
+                <VBox>
+                    <Label fx:id="userNameLabel" styleClass="sidebar-user-name"/>
+                    <Label fx:id="specialtyLabel" styleClass="sidebar-user-sub"/>
+                </VBox>
+            </HBox>
+            <Button text="Log out" styleClass="btn-logout" onAction="#onLogout"/>
+        </VBox>
+    </VBox>
+
+    <!-- MAIN -->
+    <VBox HBox.hgrow="ALWAYS">
+        <!-- TOPBAR -->
+        <HBox styleClass="topbar" alignment="CENTER_LEFT">
+            <VBox>
+                <Label text="Dashboard" styleClass="topbar-title"/>
+                <Label fx:id="topSubLabel" styleClass="topbar-sub" text="Your patient queue"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="doctorStatusLabel" styleClass="status-available" text="Available"/>
+        </HBox>
+
+        <!-- CONTENT -->
+        <ScrollPane fitToWidth="true" style="-fx-background-color: #F4F1EC; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
+            <VBox styleClass="content-area" spacing="18">
+                <Label fx:id="greetingLabel" style="-fx-font-size: 26; -fx-font-weight: bold; -fx-text-fill: #1A1C20;"/>
+
+                <!-- Current patient card -->
+                <VBox fx:id="currentPatientCard" styleClass="card-navy" spacing="10" visible="false" managed="false">
+                    <Label text="CURRENT PATIENT" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #90A0BC;"/>
+                    <HBox spacing="14" alignment="CENTER_LEFT">
+                        <Label fx:id="currentPatientAvatar" styleClass="avatar" style="-fx-background-color: #DDF0EB; -fx-text-fill: #127566; -fx-pref-width: 50; -fx-pref-height: 50; -fx-font-size: 17; -fx-background-radius: 14;"/>
+                        <VBox spacing="3">
+                            <Label fx:id="currentPatientName" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                            <Label fx:id="currentPatientSymptoms" style="-fx-font-size: 14; -fx-text-fill: #A9BBD6;" wrapText="true"/>
+                        </VBox>
+                    </HBox>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Label fx:id="currentPatientClass" styleClass="status-available"/>
+                        <Label text="→" style="-fx-text-fill: #90A0BC;"/>
+                        <Label fx:id="currentPatientStatus" styleClass="status-busy"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Queue -->
+                <VBox styleClass="card" spacing="14">
+                    <HBox alignment="CENTER_LEFT">
+                        <Label text="PENDING PATIENTS" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="Refresh" styleClass="btn-primary" style="-fx-background-color: #EDEAE2; -fx-text-fill: #4A4F57; -fx-font-size: 13; -fx-padding: 6 14 6 14;" onAction="#onRefresh"/>
+                    </HBox>
+                    <VBox fx:id="queueList" spacing="10">
+                        <Label fx:id="emptyLabel" text="No pending patients in your queue." style="-fx-font-size: 14; -fx-text-fill: #9A9EA5;"/>
+                    </VBox>
+                </VBox>
+
+                <!-- Stats -->
+                <HBox spacing="18">
+                    <VBox styleClass="card" HBox.hgrow="ALWAYS" spacing="4">
+                        <Label text="YOUR STATUS" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
+                        <Label fx:id="statusInfoLabel" style="-fx-font-size: 16; -fx-font-weight: bold;" text="Available"/>
+                        <Label text="You can accept new patients" style="-fx-font-size: 13; -fx-text-fill: #9A9EA5;"/>
+                    </VBox>
+                    <VBox styleClass="card" HBox.hgrow="ALWAYS" spacing="4">
+                        <Label text="QUEUE SIZE" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
+                        <Label fx:id="queueCountLabel" style="-fx-font-size: 16; -fx-font-weight: bold;" text="0 patients"/>
+                        <Label text="Waiting for your attention" style="-fx-font-size: 13; -fx-text-fill: #9A9EA5;"/>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </VBox>
+</HBox>

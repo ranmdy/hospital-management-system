@@ -1,0 +1,403 @@
+/* === E-HealthCare Design System === */
+
+/* Root colors */
+.root {
+    -fx-font-family: "System";
+    -navy: #13294C;
+    -navy-light: #1A3560;
+    -blue: #1F4D8F;
+    -blue-hover: #19407A;
+    -cream: #F4F1EC;
+    -cream-light: #FBFAF7;
+    -border: #E8E4DC;
+    -input-border: #DDD8CE;
+    -text-dark: #1A1C20;
+    -text-secondary: #8A8F94;
+    -text-label: #4A4F57;
+    -teal: #1F9E8A;
+    -teal-bg: #DDF0EB;
+    -teal-text: #127566;
+    -red: #D9684A;
+    -purple: #6B5DD3;
+    -white: #FFFFFF;
+    -sidebar-sub: #7E92B4;
+    -sidebar-nav: #90A0BC;
+}
+
+/* === AUTH SCREEN === */
+
+.auth-left {
+    -fx-background-color: #13294C;
+    -fx-padding: 46 50 46 50;
+}
+
+.auth-left .label {
+    -fx-text-fill: #EAF0FA;
+}
+
+.auth-title {
+    -fx-font-size: 36;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.auth-subtitle {
+    -fx-font-size: 16;
+    -fx-text-fill: #A9BBD6;
+    -fx-wrap-text: true;
+}
+
+.auth-check {
+    -fx-font-size: 14;
+    -fx-text-fill: #D5E0F0;
+}
+
+.auth-footer {
+    -fx-font-size: 12;
+    -fx-text-fill: #7E92B4;
+}
+
+.auth-right {
+    -fx-background-color: #FBFAF7;
+    -fx-padding: 40;
+    -fx-alignment: center;
+}
+
+.auth-heading {
+    -fx-font-size: 24;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1A1C20;
+}
+
+.auth-sub {
+    -fx-font-size: 14;
+    -fx-text-fill: #8A8F94;
+}
+
+/* Segment toggle (Login / Register) */
+.segment-bar {
+    -fx-background-color: #EDEAE2;
+    -fx-background-radius: 11;
+    -fx-padding: 4;
+    -fx-spacing: 5;
+}
+
+.segment-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #6B6F76;
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+    -fx-padding: 8 20 8 20;
+    -fx-background-radius: 9;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.segment-btn-active {
+    -fx-background-color: white;
+    -fx-text-fill: #1A1C20;
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+    -fx-padding: 8 20 8 20;
+    -fx-background-radius: 9;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 4, 0, 0, 1);
+    -fx-border-color: transparent;
+}
+
+/* Role cards */
+.role-card {
+    -fx-background-color: white;
+    -fx-border-color: #E8E4DC;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 12 16 12 16;
+    -fx-cursor: hand;
+    -fx-alignment: center;
+}
+
+.role-card-active {
+    -fx-background-color: white;
+    -fx-border-color: #1F4D8F;
+    -fx-border-width: 2;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 11 15 11 15;
+    -fx-cursor: hand;
+    -fx-alignment: center;
+}
+
+.role-label {
+    -fx-font-size: 13;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1A1C20;
+}
+
+.role-emoji {
+    -fx-font-size: 18;
+}
+
+/* Text fields */
+.field-label {
+    -fx-font-size: 13;
+    -fx-font-weight: bold;
+    -fx-text-fill: #4A4F57;
+}
+
+.text-input {
+    -fx-background-color: white;
+    -fx-border-color: #DDD8CE;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-padding: 11 13 11 13;
+    -fx-font-size: 14;
+    -fx-text-fill: #1A1C20;
+    -fx-prompt-text-fill: #B0B3B8;
+}
+
+.text-input:focused {
+    -fx-border-color: #1F4D8F;
+    -fx-effect: dropshadow(gaussian, rgba(31,77,143,0.15), 6, 0, 0, 0);
+}
+
+/* Primary button */
+.btn-primary {
+    -fx-background-color: #1F4D8F;
+    -fx-text-fill: white;
+    -fx-font-size: 15;
+    -fx-font-weight: bold;
+    -fx-padding: 13 20 13 20;
+    -fx-background-radius: 11;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.btn-primary:hover {
+    -fx-background-color: #19407A;
+}
+
+/* Message label */
+.error-label {
+    -fx-text-fill: #D9684A;
+    -fx-font-size: 13;
+    -fx-font-weight: bold;
+}
+
+.success-label {
+    -fx-text-fill: #1F9E8A;
+    -fx-font-size: 13;
+    -fx-font-weight: bold;
+}
+
+/* === APP SHELL === */
+
+/* Sidebar */
+.sidebar {
+    -fx-background-color: #13294C;
+    -fx-padding: 24 16 20 16;
+    -fx-pref-width: 220;
+    -fx-min-width: 220;
+}
+
+.sidebar-brand {
+    -fx-font-size: 17;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.sidebar-logo {
+    -fx-background-color: white;
+    -fx-background-radius: 11;
+    -fx-text-fill: #13294C;
+    -fx-font-size: 22;
+    -fx-font-weight: bold;
+    -fx-pref-width: 36;
+    -fx-pref-height: 36;
+    -fx-alignment: center;
+}
+
+.nav-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: #90A0BC;
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+    -fx-padding: 10 12 10 12;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+    -fx-alignment: center-left;
+    -fx-border-color: transparent;
+}
+
+.nav-item:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.07);
+}
+
+.nav-item-active {
+    -fx-background-color: rgba(255, 255, 255, 0.12);
+    -fx-text-fill: white;
+    -fx-font-size: 14;
+    -fx-font-weight: bold;
+    -fx-padding: 10 12 10 12;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+    -fx-alignment: center-left;
+    -fx-border-color: transparent;
+}
+
+.sidebar-divider {
+    -fx-border-color: rgba(255, 255, 255, 0.1);
+    -fx-border-width: 1 0 0 0;
+    -fx-padding: 14 0 0 0;
+}
+
+.sidebar-section-label {
+    -fx-font-size: 11;
+    -fx-font-weight: bold;
+    -fx-text-fill: #7E92B4;
+}
+
+.sidebar-user-name {
+    -fx-font-size: 13;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.sidebar-user-sub {
+    -fx-font-size: 12;
+    -fx-text-fill: #7E92B4;
+}
+
+/* Top bar */
+.topbar {
+    -fx-background-color: #FBFAF7;
+    -fx-border-color: #E8E4DC;
+    -fx-border-width: 0 0 1 0;
+    -fx-padding: 0 30 0 30;
+    -fx-pref-height: 68;
+    -fx-min-height: 68;
+    -fx-max-height: 68;
+    -fx-alignment: center-left;
+}
+
+.topbar-title {
+    -fx-font-size: 18;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1A1C20;
+}
+
+.topbar-sub {
+    -fx-font-size: 13;
+    -fx-text-fill: #8A8F94;
+}
+
+/* Main content */
+.content-area {
+    -fx-background-color: #F4F1EC;
+    -fx-padding: 28 30 28 30;
+}
+
+/* Cards */
+.card {
+    -fx-background-color: white;
+    -fx-border-color: #E8E4DC;
+    -fx-border-radius: 18;
+    -fx-background-radius: 18;
+    -fx-padding: 22;
+}
+
+.card-navy {
+    -fx-background-color: #13294C;
+    -fx-background-radius: 18;
+    -fx-padding: 24;
+}
+
+.card-navy .label {
+    -fx-text-fill: #EAF0FA;
+}
+
+.card-gradient {
+    -fx-background-color: linear-gradient(to right, #1F4D8F, #2A63B0);
+    -fx-background-radius: 18;
+    -fx-padding: 22 24 22 24;
+}
+
+.card-label {
+    -fx-font-size: 13;
+    -fx-font-weight: bold;
+    -fx-text-fill: #8A8F94;
+}
+
+.card-title {
+    -fx-font-size: 17;
+    -fx-font-weight: bold;
+    -fx-text-fill: #1A1C20;
+}
+
+.card-text {
+    -fx-font-size: 14;
+    -fx-text-fill: #6B6F76;
+    -fx-wrap-text: true;
+}
+
+/* Status pills */
+.status-available {
+    -fx-background-color: #E8F5E9;
+    -fx-text-fill: #2E7D32;
+    -fx-background-radius: 20;
+    -fx-padding: 4 12 4 12;
+    -fx-font-size: 12;
+    -fx-font-weight: bold;
+}
+
+.status-busy {
+    -fx-background-color: #FFF3E0;
+    -fx-text-fill: #E65100;
+    -fx-background-radius: 20;
+    -fx-padding: 4 12 4 12;
+    -fx-font-size: 12;
+    -fx-font-weight: bold;
+}
+
+.status-pending {
+    -fx-background-color: #EDEAE2;
+    -fx-text-fill: #6B6F76;
+    -fx-background-radius: 20;
+    -fx-padding: 4 12 4 12;
+    -fx-font-size: 12;
+    -fx-font-weight: bold;
+}
+
+/* Avatar */
+.avatar {
+    -fx-background-radius: 12;
+    -fx-pref-width: 40;
+    -fx-pref-height: 40;
+    -fx-alignment: center;
+    -fx-font-weight: bold;
+    -fx-font-size: 14;
+    -fx-text-fill: white;
+}
+
+.avatar-teal {
+    -fx-background-color: #DDF0EB;
+    -fx-text-fill: #127566;
+}
+
+.avatar-blue {
+    -fx-background-color: #1F4D8F;
+    -fx-text-fill: white;
+}
+
+/* Logout button */
+.btn-logout {
+    -fx-background-color: transparent;
+    -fx-text-fill: #90A0BC;
+    -fx-font-size: 13;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-padding: 8 12 8 12;
+}
+
+.btn-logout:hover {
+    -fx-text-fill: white;
+}

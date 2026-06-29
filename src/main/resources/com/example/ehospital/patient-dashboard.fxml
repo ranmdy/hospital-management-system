@@ -2,15 +2,101 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.*?>
 
-<VBox alignment="CENTER" spacing="15.0" xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.ehospital.PatientDashboardController">
-    <padding>
-        <Insets bottom="30.0" left="40.0" right="40.0" top="30.0"/>
-    </padding>
+<HBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.ehospital.PatientDashboardController"
+      stylesheets="@styles.css">
 
-    <Label text="Patient Dashboard" style="-fx-font-size: 20; -fx-font-weight: bold;"/>
-    <Label fx:id="welcomeLabel" style="-fx-font-size: 14;"/>
-    <Button text="Logout" onAction="#onLogout"/>
-</VBox>
+    <!-- SIDEBAR -->
+    <VBox styleClass="sidebar" spacing="3">
+        <HBox alignment="CENTER_LEFT" spacing="11">
+            <Label text="+" styleClass="sidebar-logo"/>
+            <Label text="Ranmdy" styleClass="sidebar-brand"/>
+        </HBox>
+        <Region prefHeight="20"/>
+
+        <Button text="Dashboard" styleClass="nav-item-active" maxWidth="Infinity"/>
+        <Button text="Symptom check" styleClass="nav-item" maxWidth="Infinity" onAction="#goToSymptom"/>
+        <Button text="Consultation" styleClass="nav-item" maxWidth="Infinity"/>
+        <Button text="Prescription" styleClass="nav-item" maxWidth="Infinity"/>
+
+        <Region VBox.vgrow="ALWAYS"/>
+
+        <VBox styleClass="sidebar-divider" spacing="8">
+            <HBox alignment="CENTER_LEFT" spacing="11">
+                <Label fx:id="avatarLabel" styleClass="avatar, avatar-blue"/>
+                <VBox>
+                    <Label fx:id="userNameLabel" styleClass="sidebar-user-name"/>
+                    <Label text="Patient" styleClass="sidebar-user-sub"/>
+                </VBox>
+            </HBox>
+            <Button text="Log out" styleClass="btn-logout" onAction="#onLogout"/>
+        </VBox>
+    </VBox>
+
+    <!-- MAIN -->
+    <VBox HBox.hgrow="ALWAYS">
+        <!-- TOPBAR -->
+        <HBox styleClass="topbar" alignment="CENTER_LEFT">
+            <VBox>
+                <Label text="Dashboard" styleClass="topbar-title"/>
+                <Label text="Your care overview" styleClass="topbar-sub"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="statusLabel" styleClass="status-pending" text="Pending"/>
+        </HBox>
+
+        <!-- CONTENT -->
+        <ScrollPane fitToWidth="true" style="-fx-background-color: #F4F1EC; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
+            <VBox styleClass="content-area" spacing="18">
+                <Label fx:id="greetingLabel" style="-fx-font-size: 26; -fx-font-weight: bold; -fx-text-fill: #1A1C20;"/>
+                <Label fx:id="subLabel" style="-fx-font-size: 14; -fx-text-fill: #8A8F94;"/>
+
+                <!-- Consultation status card -->
+                <HBox spacing="18">
+                    <VBox styleClass="card-navy" HBox.hgrow="ALWAYS" spacing="8">
+                        <Label text="CONSULTATION STATUS" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #90A0BC;"/>
+                        <Label fx:id="consultTitle" style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: white;" text="No active consultation"/>
+                        <Label fx:id="consultDesc" style="-fx-font-size: 14; -fx-text-fill: #A9BBD6;" wrapText="true" text="Submit your symptoms to get matched with a doctor."/>
+                        <Region prefHeight="6"/>
+                        <Button text="Describe symptoms →" styleClass="btn-primary" style="-fx-background-color: white; -fx-text-fill: #13294C;" onAction="#goToSymptom"/>
+                    </VBox>
+
+                    <VBox styleClass="card" minWidth="240" maxWidth="280" spacing="8">
+                        <Label text="ASSIGNED DOCTOR" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
+                        <HBox spacing="12" alignment="CENTER_LEFT">
+                            <Label fx:id="doctorAvatar" styleClass="avatar, avatar-teal" style="-fx-pref-width: 50; -fx-pref-height: 50; -fx-font-size: 17;"/>
+                            <VBox>
+                                <Label fx:id="doctorNameLabel" style="-fx-font-size: 16; -fx-font-weight: bold;" text="Not assigned"/>
+                                <Label fx:id="doctorSpecLabel" style="-fx-font-size: 13; -fx-text-fill: #8A8F94;" text="—"/>
+                            </VBox>
+                        </HBox>
+                        <Label fx:id="doctorStatusLabel" style="-fx-font-size: 13; -fx-text-fill: #127566; -fx-font-weight: bold;" text=""/>
+                    </VBox>
+                </HBox>
+
+                <!-- Bottom cards -->
+                <HBox spacing="18">
+                    <VBox styleClass="card" HBox.hgrow="ALWAYS" spacing="8">
+                        <Label text="ACTIVE PRESCRIPTION" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
+                        <Label text="No active prescription yet. Your doctor will issue one here after the consultation." style="-fx-font-size: 13; -fx-text-fill: #9A9EA5;" wrapText="true"/>
+                    </VBox>
+                    <VBox styleClass="card" HBox.hgrow="ALWAYS" spacing="8">
+                        <Label text="ADMISSION &amp; TRANSFER" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
+                        <Label text="You are not currently admitted. If your condition is severe, your doctor can admit you to a bed." style="-fx-font-size: 13; -fx-text-fill: #9A9EA5;" wrapText="true"/>
+                    </VBox>
+                </HBox>
+
+                <!-- CTA banner -->
+                <HBox styleClass="card-gradient" alignment="CENTER_LEFT">
+                    <VBox HBox.hgrow="ALWAYS">
+                        <Label text="Not feeling well? Describe your symptoms." style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                        <Label text="We will match you with the right specialist." style="-fx-font-size: 14; -fx-text-fill: #B8CCEF;"/>
+                    </VBox>
+                    <Button text="Start →" styleClass="btn-primary" style="-fx-background-color: white; -fx-text-fill: #1F4D8F;" onAction="#goToSymptom"/>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </VBox>
+</HBox>
