@@ -165,6 +165,24 @@ public class PatientDAO {
         return null;
     }
 
+    public List<Patient> getAdmittedForDoctor(int doctorId) {
+        List<Patient> list = new ArrayList<>();
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            String sql = "SELECT * FROM patients WHERE assigned_doctor_id = ? AND status = 'admitted'";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, doctorId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                list.add(buildPatient(rs));
+            }
+            conn.close();
+        } catch (Exception e) {
+            System.out.println("Get admitted patients failed: " + e.getMessage());
+        }
+        return list;
+    }
+
     private Patient buildPatient(ResultSet rs) throws Exception {
         Patient p = new Patient();
         p.setId(rs.getInt("id"));

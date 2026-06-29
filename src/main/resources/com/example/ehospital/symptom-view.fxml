@@ -18,8 +18,8 @@
 
         <Button text="Dashboard" styleClass="nav-item" maxWidth="Infinity" onAction="#goToDashboard"/>
         <Button text="Symptom check" styleClass="nav-item-active" maxWidth="Infinity"/>
-        <Button text="Consultation" styleClass="nav-item" maxWidth="Infinity"/>
-        <Button text="Prescription" styleClass="nav-item" maxWidth="Infinity"/>
+        <Button text="Consultation" styleClass="nav-item" maxWidth="Infinity" onAction="#goToConsultation"/>
+        <Button text="Prescription" styleClass="nav-item" maxWidth="Infinity" onAction="#goToPrescription"/>
 
         <Region VBox.vgrow="ALWAYS"/>
 

@@ -1,5 +1,6 @@
 package com.example.ehospital;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -89,11 +90,34 @@ public class SymptomController {
         SessionManager.loginAsPatient(patient);
 
         submitBtn.setDisable(true);
+
+        // go to dashboard after 2 seconds so patient sees the message
+        new java.util.Timer(true).schedule(new java.util.TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> loadScreen("patient-dashboard.fxml"));
+            }
+        }, 2000);
     }
 
     @FXML
     private void goToDashboard() {
         loadScreen("patient-dashboard.fxml");
+    }
+
+    @FXML
+    private void goToConsultation() {
+        Patient patient = SessionManager.getPatient();
+        if (patient != null && patient.getAssignedDoctorId() > 0) {
+            loadScreen("patient-chat.fxml");
+        } else {
+            loadScreen("symptom-view.fxml");
+        }
+    }
+
+    @FXML
+    private void goToPrescription() {
+        loadScreen("patient-prescriptions.fxml");
     }
 
     @FXML
@@ -106,7 +130,7 @@ public class SymptomController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Stage stage = (Stage) symptomArea.getScene().getWindow();
-            stage.setScene(new Scene(loader.load()));
+            stage.setScene(new Scene(loader.load(), 900, 600));
         } catch (Exception e) {
             System.out.println("Could not load screen: " + e.getMessage());
         }

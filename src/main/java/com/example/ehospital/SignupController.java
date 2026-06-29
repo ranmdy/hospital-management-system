@@ -105,9 +105,7 @@ public class SignupController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("login-view.fxml"));
             Stage stage = (Stage) nameField.getScene().getWindow();
-            stage.setScene(new Scene(loader.load()));
-            stage.setWidth(900);
-            stage.setHeight(600);
+            stage.setScene(new Scene(loader.load(), 900, 600));
         } catch (Exception e) {
             System.out.println("Could not load screen: " + e.getMessage());
         }

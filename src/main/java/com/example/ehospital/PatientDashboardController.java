@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
+import javafx.scene.layout.VBox;
 
 public class PatientDashboardController {
 
@@ -19,6 +20,9 @@ public class PatientDashboardController {
     @FXML private Label doctorNameLabel;
     @FXML private Label doctorSpecLabel;
     @FXML private Label doctorStatusLabel;
+    @FXML private VBox rxCard;
+    @FXML private Label rxCardText;
+    @FXML private Label admitCardText;
 
     @FXML
     public void initialize() {
@@ -73,11 +77,41 @@ public class PatientDashboardController {
                 }
             }
         }
+
+        // update prescription card
+        PrescriptionDAO rxDAO = new PrescriptionDAO();
+        Prescription rx = rxDAO.getByPatientId(patient.getId());
+        if (rx != null) {
+            rxCardText.setText(rx.getMedicine() + " — " + rx.getDosage());
+            rxCardText.setStyle("-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #1A1C20;");
+        }
+
+        // update admission card
+        if (status != null && status.equals("admitted")) {
+            admitCardText.setText("You have been admitted to the hospital for further care.");
+            admitCardText.setStyle("-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #B14A33;");
+        }
     }
 
     @FXML
     private void goToSymptom() {
         loadScreen("symptom-view.fxml");
+    }
+
+    @FXML
+    private void goToConsultation() {
+        Patient patient = SessionManager.getPatient();
+        if (patient != null && patient.getAssignedDoctorId() > 0) {
+            loadScreen("patient-chat.fxml");
+        } else {
+            // no doctor assigned yet, go to symptom check
+            loadScreen("symptom-view.fxml");
+        }
+    }
+
+    @FXML
+    private void goToPrescription() {
+        loadScreen("patient-prescriptions.fxml");
     }
 
     @FXML
@@ -90,7 +124,7 @@ public class PatientDashboardController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Stage stage = (Stage) greetingLabel.getScene().getWindow();
-            stage.setScene(new Scene(loader.load()));
+            stage.setScene(new Scene(loader.load(), 900, 600));
         } catch (Exception e) {
             System.out.println("Could not load screen: " + e.getMessage());
         }

@@ -17,10 +17,10 @@
         <Region prefHeight="20"/>
 
         <Button text="Dashboard" styleClass="nav-item-active" maxWidth="Infinity"/>
-        <Button text="Consultation" styleClass="nav-item" maxWidth="Infinity"/>
-        <Button text="Admission" styleClass="nav-item" maxWidth="Infinity"/>
+        <Button text="Consultation" styleClass="nav-item" maxWidth="Infinity" onAction="#goToConsultation"/>
+        <Button text="Admission" styleClass="nav-item" maxWidth="Infinity" onAction="#goToAdmission"/>
         <Button text="Transfer" styleClass="nav-item" maxWidth="Infinity"/>
-        <Button text="Prescription" styleClass="nav-item" maxWidth="Infinity"/>
+        <Button text="Prescription" styleClass="nav-item" maxWidth="Infinity" onAction="#goToPrescription"/>
 
         <Region VBox.vgrow="ALWAYS"/>
 
@@ -68,6 +68,8 @@
                         <Label text="→" style="-fx-text-fill: #90A0BC;"/>
                         <Label fx:id="currentPatientStatus" styleClass="status-busy"/>
                     </HBox>
+                    <Button text="Open consultation chat →" onAction="#goToConsultation"
+                            style="-fx-background-color: white; -fx-text-fill: #13294C; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 10 18; -fx-background-radius: 10; -fx-cursor: hand; -fx-border-color: transparent;"/>
                 </VBox>
 
                 <!-- Queue -->

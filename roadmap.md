@@ -1,98 +1,83 @@
+# E-HealthCare Management — Our Project Roadmap
 
-# E-HealthCare Management
+This is our plan for building Ranmdy Healthcare Center, a virtual doctor platform built in JavaFX with MySQL through XAMPP. A patient describes their symptoms, gets matched to a doctor, they chat, and the patient either gets a prescription, gets admitted to a bed, or gets transferred to a partner hospital.
 
-This is our plan for building a virtual doctor app. The idea is simple. A patient describes their symptoms, we match them to a doctor, they chat, and the patient either gets a prescription or gets admitted to a hospital bed or get transfared to another hospital (hospital)...{under fixing from UI}.
+After reviewing the final frontend design, a few things changed from our original plan. We added a hospital transfer feature, a patient file screen, and updated how the doctor queue and admission work. Everything else stays the same.
 
-We are building it with JavaFX for the screens, JDBC as the connector, and MySQL through XAMPP for the database.
+## What changed from the original plan
 
-## How we are tackling this
-
-We are building it from the bottom up. We finish each chunk before moving to the next one, since each part needs the one before it to work.
-
-We have set ourselves two checkpoints along the way. After Chunk 2 we will have something we can actually show. After Chunk 5 we will have a full working app. Chunk 6 with the beds is our bonus, and it is what will make the project stand out.
-
-We tick the boxes off as we finish them.
+We now have three user roles instead of two. Doctor and patient stay the same but we added a hospital admin role that handles incoming transfer requests from doctors. The transfer feature is brand new. The doctor can refer a patient to a partner hospital, set an urgency level, write a clinical note, and choose whether to send the patient file now or let the hospital request it. The hospital admin can then accept or decline the transfer, request the file if it was not sent, and confirm when the patient arrives. The patient file screen is also new. It shows the full clinical record including demographics, vitals, symptoms, classification, prescriptions, admission history, and the full chat log.
 
 ## Chunk 0: Setup
 
-First we get the foundation running before touching any features.
-
-We install XAMPP and start MySQL, then create our ehealthcare database and run schema.sql to build the tables. After that we set up the JavaFX project in IntelliJ, add the MySQL JDBC connector, and write the DatabaseConnection class to test it.
+We install XAMPP and start MySQL, create the ehealthcare database, and run schema.sql to build the tables. We set up the JavaFX project in IntelliJ and add the MySQL JDBC connector. We also set up the GitHub repo so the whole team can pull and push.
 
 We are done when Java can connect to MySQL and print a row.
 
 ## Chunk 1: Login and Signup
 
-This is the way into everything else, so it comes next.
+We build the login and signup screen with a role toggle for patient, doctor, and hospital admin. We create our Patient, Doctor, and Hospital models and their DAOs. We add a SessionManager to track who is logged in. Patient lands on the patient dashboard. Doctor lands on the doctor dashboard. Hospital admin lands on the transfer requests screen.
 
-We build the login and signup screen with a role toggle for patient or doctor. Then we create our Patient and Doctor models, build their DAOs for register and login, and add a SessionManager to keep track of who is logged in.
-
-We are done when a patient and a doctor can each register, log in, and land on a blank dashboard.
+We are done when all three roles can register, log in, and reach their correct screen.
 
 ## Chunk 2: Patient enters symptoms
 
-Now we build the patient's main path.
+We build the patient dashboard and the symptom intake form. We write the IllnessClassifier that reads the symptom text and maps it to an illness class and a doctor specialty. The result shows as a chip before the patient submits.
 
-We build the patient dashboard and the symptom intake form, then write the IllnessClassifier that turns symptoms into a type of doctor.
+We are done when a patient submits symptoms, the illness gets classified, and the entry is saved to the database.
 
-We are done when a patient submits symptoms and the app sorts them into a category. At this point we have something we can demo.
+> At this point we have something we can demo.
 
-## Chunk 3: Doctor gets the patient (the queue)
+## Chunk 3: Doctor queue and accept flow
 
-This is the heart of our system, so we want to get it right.
+This is the heart of the system. We add a status column to both the patients and doctors tables. Patient statuses are PENDING, IN_CONSULT, PRESCRIBED, ADMITTED, and DISCHARGED. Doctor statuses are AVAILABLE, BUSY, and ON_HOLD. A doctor handles one patient at a time. When a doctor goes on hold, pending patients re-queue to another available doctor of the same specialty if one exists. If none exists they stay pending.
 
-We add a status column to our patients and doctors tables, then build the doctor dashboard with a pending patient queue. We add the accept, consult, and next or hold controls, and make sure a doctor only handles one patient at a time.
-
-We are done when a patient who submits symptoms shows up in the right doctor's queue, and the doctor can accept them one at a time.
+We are done when a patient shows up in the right doctor queue and the doctor can accept them one at a time.
 
 ## Chunk 4: Chat
 
-Next we let the doctor and patient actually talk.
+We create the messages table and build the ChatDAO to save and load messages. We build the chat screen for both sides. New messages appear automatically by polling every 2 seconds. The prescription panel appears on the right side of the patient chat once the doctor issues one.
 
-We create the messages table and build the ChatDAO to save and load messages. Then we build the chat screen for both sides and make new messages show up automatically by refreshing every couple of seconds.
-
-We are done when the doctor and patient can message back and forth live.
+We are done when doctor and patient can message each other live.
 
 ## Chunk 5: Prescription
 
-Then we handle what comes out of the consultation.
+We build the prescription form with medicine, dosage, and notes. The doctor chooses either prescribe drugs for a mild case or admit to hospital for a severe case. When a prescription is issued it saves to the database and appears immediately on the patient side. The doctor then picks next patient or goes on hold.
 
-We build the prescription form with medicine, dosage, and notes, then add the doctor's choice to either prescribe drugs or admit the patient. Finally we build the prescription view on the patient's side.
+We are done when a doctor can close a consult by issuing a prescription the patient can see.
 
-We are done when a doctor can wrap up a consult by sending a prescription the patient can see. At this point we have a full working app.
+> At this point we have a full working app.
 
 ## Chunk 6: Beds and admission
 
-This is our bonus chunk, the part we think will really set the project apart.
+We build the Hospital model and DAO. When the doctor clicks admit we check available beds. We show a grid of free and occupied beds. The doctor taps a free bed to pair it with the patient and the attending doctor. That decrements available beds and sets the patient to ADMITTED. If no beds are free the screen shows a fallback and offers to prescribe instead.
 
-We build the Hospital model and DAO, then check bed availability when admitting. We pair a free bed and the attending doctor to the patient, and if there are no free beds we fall back to a prescription instead. We also build the hospital dashboard showing occupied versus free beds.
+We are done when admitting a patient takes a bed, and a full hospital falls back to a prescription.
 
-We are done when admitting a severe patient takes a bed, and a full hospital falls back to medicine.
+## Chunk 7: Hospital transfer (new)
 
-## Chunk 7: Final polish
+This is the new chunk from the updated design. The doctor fills a transfer form with a destination hospital, Lagos LGA branch, urgency level (Routine, Urgent, Emergency), a clinical note, and a choice to either send the patient file now or let the hospital request it later.
 
-We are saving the trickiest bits for last.
+The request lands in the hospital admin inbox tagged NEW. The admin can accept, decline, or request the file if it was not sent. If they request the file it notifies the doctor who can approve or deny sharing. When the admin accepts, a bed is reserved at the receiving hospital. When the patient arrives the admin confirms it and the status updates for the doctor and patient.
 
-We re-queue patients to another doctor when one goes on hold, build the discharge flow that frees the bed, and show status indicators everywhere. We also add input validation and error handling, and style everything to match our design.
+We are done when the full transfer loop works from doctor submission to hospital arrival confirmation.
 
-We are done when the app handles the edge cases cleanly and looks finished.
+## Chunk 8: Patient file screen (new)
 
-## How our statuses work
+The patient file is a full clinical record that can be opened two ways. The doctor opens it directly from the sidebar. The hospital admin opens it after the doctor shares it as part of a transfer. The file shows demographics, vitals, symptoms and illness classification, prescriptions, admission history, and the full consultation chat log.
 
-Each patient moves through these states. They start as pending, then move to in consult, then to either prescribed or admitted, and finally to discharged.
+We are done when the file renders correctly for both the doctor view and the shared transfer view.
 
-Each doctor moves through available, then busy, then on hold, and back to available.
+## Chunk 9: Final polish
 
-## How we are working together
+We handle the trickiest edge cases and clean everything up. We complete the re-queue logic when a doctor goes on hold. We build the discharge flow that frees the bed. We add input validation and error handling throughout. We make sure the status lifecycle indicators show correctly everywhere across all three user views.
 
-We are sorting this out in Chunk 0 so we do not trip over each other later.
-
-One of us creates a private GitHub repo and adds the rest of the team as collaborators, then we all clone it. Our rule is to pull before we start and push when we finish.
-
-We are also hosting one MySQL database online so all our apps use the same data. We need this because a doctor on one laptop has to see a patient who registered on another.
-
-Finally we divide the work so no two of us are editing the same file at the same time. These chunks make that easy to split.
+We are done when the whole system runs clean end to end with no broken flows.
 
 ## Our database tables
 
-The doctors table holds doctor accounts, specialty, and status. The patients table holds patient accounts, symptoms, illness class, and status. The hospitals table holds bed counts for total and available. The prescriptions table holds medicine and dosage per patient. The messages table holds the chat between doctor and patient.
+The doctors table holds doctor accounts, specialty, license number, and status. The patients table holds patient accounts, symptoms, illness class, and status. The hospitals table holds bed counts for total and available. The prescriptions table holds medicine and dosage per patient. The messages table holds the full chat between doctor and patient. The transfers table, which is new, holds all transfer requests with urgency, reason, file sharing status, and the current state of the request.
+
+## How we are working together
+
+One of us creates a private GitHub repo and adds the team as collaborators. We all clone it. The rule is pull before we start and push when we finish, and nobody merges their own pull request. We are also hosting one MySQL database online so all our apps connect to the same data. We split work by chunk so no two of us touch the same files at the same time.

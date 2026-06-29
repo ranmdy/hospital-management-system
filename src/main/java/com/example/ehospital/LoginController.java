@@ -91,9 +91,7 @@ public class LoginController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Stage stage = (Stage) emailField.getScene().getWindow();
-            stage.setScene(new Scene(loader.load()));
-            stage.setWidth(900);
-            stage.setHeight(600);
+            stage.setScene(new Scene(loader.load(), 900, 600));
         } catch (Exception e) {
             System.out.println("Could not load screen: " + e.getMessage());
         }

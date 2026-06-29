@@ -149,10 +149,25 @@ public class DoctorDashboardController {
         DoctorDAO doctorDAO = new DoctorDAO();
         doctorDAO.updateStatus(doctor.getId(), "busy");
 
-        // refresh
+        // refresh and go to chat
         doctor = doctorDAO.getById(doctor.getId());
         SessionManager.loginAsDoctor(doctor);
-        initialize();
+        loadScreen("doctor-chat.fxml");
+    }
+
+    @FXML
+    private void goToConsultation() {
+        loadScreen("doctor-chat.fxml");
+    }
+
+    @FXML
+    private void goToAdmission() {
+        loadScreen("doctor-admissions.fxml");
+    }
+
+    @FXML
+    private void goToPrescription() {
+        loadScreen("doctor-prescriptions.fxml");
     }
 
     @FXML
@@ -170,7 +185,7 @@ public class DoctorDashboardController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Stage stage = (Stage) greetingLabel.getScene().getWindow();
-            stage.setScene(new Scene(loader.load()));
+            stage.setScene(new Scene(loader.load(), 900, 600));
         } catch (Exception e) {
             System.out.println("Could not load screen: " + e.getMessage());
         }
