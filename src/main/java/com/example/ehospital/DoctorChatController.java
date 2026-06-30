@@ -40,12 +40,20 @@ public class DoctorChatController {
     @FXML private TextArea notesField;
     @FXML private Label rxMessage;
     @FXML private VBox afterConsult;
+    @FXML private VBox transferStatusBox;
+    @FXML private VBox transferStatusCard;
+    @FXML private Label transferHospitalLabel;
+    @FXML private Label transferStatusLabel;
+    @FXML private VBox fileRequestBox;
+    @FXML private Label fileRequestLabel;
+    @FXML private Button approveFileBtn;
 
     private Doctor doctor;
     private Patient patient;
     private ChatDAO chatDAO = new ChatDAO();
     private Timer pollTimer;
     private int lastMessageCount = 0;
+    private Transfer activeTransfer;
 
     @FXML
     public void initialize() {
@@ -83,8 +91,63 @@ public class DoctorChatController {
             messageField.setDisable(true);
         }
 
-        loadMessages();
-        startPolling();
+        if (patient != null) {
+            loadMessages();
+            loadTransferStatus();
+            startPolling();
+        }
+    }
+
+    private void loadTransferStatus() {
+        if (patient == null) return;
+
+        TransferDAO transferDAO = new TransferDAO();
+        activeTransfer = transferDAO.getActiveByDoctorAndPatient(doctor.getId(), patient.getId());
+
+        if (activeTransfer == null) {
+            // also check for any recent transfer (including declined)
+            activeTransfer = transferDAO.getByDoctorAndPatient(doctor.getId(), patient.getId());
+        }
+
+        if (activeTransfer != null) {
+            transferStatusBox.setVisible(true);
+            transferStatusBox.setManaged(true);
+
+            HospitalDAO hospitalDAO = new HospitalDAO();
+            Hospital destHospital = hospitalDAO.getById(activeTransfer.getToHospitalId());
+            transferHospitalLabel.setText(destHospital != null ? destHospital.getName() : "Hospital");
+
+            String status = activeTransfer.getStatus();
+            if ("new".equals(status)) {
+                transferStatusLabel.setText("Pending — awaiting hospital response");
+                transferStatusLabel.setStyle("-fx-font-size: 13; -fx-text-fill: #7A5A12;");
+                transferStatusCard.setStyle("-fx-background-color: #FFF8EC; -fx-border-color: #F0DFB8; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 14;");
+            } else if ("accepted".equals(status)) {
+                transferStatusLabel.setText("Accepted — bed reserved");
+                transferStatusLabel.setStyle("-fx-font-size: 13; -fx-text-fill: #1F6E4F;");
+                transferStatusCard.setStyle("-fx-background-color: #EAF5EE; -fx-border-color: #BFE0CE; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 14;");
+            } else if ("declined".equals(status)) {
+                String reason = activeTransfer.getDeclineReason() != null ? " — " + activeTransfer.getDeclineReason() : "";
+                transferStatusLabel.setText("Declined" + reason);
+                transferStatusLabel.setStyle("-fx-font-size: 13; -fx-text-fill: #9A4A36;");
+                transferStatusCard.setStyle("-fx-background-color: #FBEEE9; -fx-border-color: #F0D9D0; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 14;");
+            }
+
+            // file request from hospital
+            if (activeTransfer.isFileRequested() && !activeTransfer.isFileApproved() && !activeTransfer.isFileSent()) {
+                fileRequestBox.setVisible(true);
+                fileRequestBox.setManaged(true);
+                fileRequestLabel.setText("The receiving hospital has requested this patient's medical file. Approve to share.");
+            } else {
+                fileRequestBox.setVisible(false);
+                fileRequestBox.setManaged(false);
+            }
+        } else {
+            transferStatusBox.setVisible(false);
+            transferStatusBox.setManaged(false);
+            fileRequestBox.setVisible(false);
+            fileRequestBox.setManaged(false);
+        }
     }
 
     private void loadMessages() {
@@ -255,6 +318,20 @@ public class DoctorChatController {
     }
 
     @FXML
+    private void onApproveFile() {
+        if (activeTransfer == null) return;
+        TransferDAO transferDAO = new TransferDAO();
+        transferDAO.approveFile(activeTransfer.getId());
+
+        chatDAO.sendMessage(doctor.getId(), patient.getId(), "doctor",
+                "Patient file has been shared with the receiving hospital.");
+
+        lastMessageCount = 0;
+        loadMessages();
+        loadTransferStatus();
+    }
+
+    @FXML
     private void onTransfer() {
         stopPolling();
         loadScreen("doctor-transfer.fxml");
@@ -290,7 +367,10 @@ public class DoctorChatController {
         pollTimer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                Platform.runLater(() -> loadMessages());
+                Platform.runLater(() -> {
+                    loadMessages();
+                    loadTransferStatus();
+                });
             }
         }, 2000, 2000);
     }
@@ -313,7 +393,8 @@ public class DoctorChatController {
     }
 
     private String getInitials(String name) {
-        String[] parts = name.split(" ");
+        if (name == null || name.isEmpty()) return "?";
+        String[] parts = name.trim().split(" ");
         if (parts.length >= 2) return ("" + parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
         return ("" + parts[0].charAt(0)).toUpperCase();
     }

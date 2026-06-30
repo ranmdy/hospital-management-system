@@ -103,6 +103,25 @@
                         <Label fx:id="rxMessage" styleClass="error-label"/>
                     </VBox>
 
+                    <!-- Transfer status (shown when transfer exists) -->
+                    <VBox fx:id="transferStatusBox" spacing="8" visible="false" managed="false">
+                        <Label text="TRANSFER STATUS" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
+                        <VBox fx:id="transferStatusCard" styleClass="card" spacing="6">
+                            <Label fx:id="transferHospitalLabel" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+                            <Label fx:id="transferStatusLabel" style="-fx-font-size: 13;"/>
+                        </VBox>
+                    </VBox>
+
+                    <!-- File request from hospital (shown when hospital requests the file) -->
+                    <VBox fx:id="fileRequestBox" spacing="8" visible="false" managed="false">
+                        <Label text="FILE REQUEST" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
+                        <VBox style="-fx-background-color: #FFF8EC; -fx-border-color: #F0DFB8; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 14;" spacing="8">
+                            <Label fx:id="fileRequestLabel" style="-fx-font-size: 13; -fx-text-fill: #7A5A12;" wrapText="true"/>
+                            <Button fx:id="approveFileBtn" text="Approve and share file" onAction="#onApproveFile" maxWidth="Infinity"
+                                    style="-fx-background-color: #4B3FA6; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-padding: 10; -fx-background-radius: 10; -fx-cursor: hand; -fx-border-color: transparent;"/>
+                        </VBox>
+                    </VBox>
+
                     <!-- After consult -->
                     <VBox fx:id="afterConsult" spacing="10" visible="false" managed="false">
                         <Label text="CONSULTATION COMPLETE" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>

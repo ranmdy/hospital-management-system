@@ -54,10 +54,10 @@ public class DoctorDashboardController {
 
     private void updateDoctorStatus(Doctor doctor) {
         String status = doctor.getStatus();
-        if (status.equals("available")) {
+        if ("available".equals(status)) {
             doctorStatusLabel.setText("Available");
             doctorStatusLabel.getStyleClass().setAll("status-available");
-        } else if (status.equals("busy")) {
+        } else if ("busy".equals(status)) {
             doctorStatusLabel.setText("Busy");
             doctorStatusLabel.getStyleClass().setAll("status-busy");
         } else {
@@ -70,9 +70,9 @@ public class DoctorDashboardController {
         String active = "-fx-background-color: white; -fx-text-fill: #127566; -fx-font-size: 12; -fx-font-weight: bold; -fx-padding: 6 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: transparent;";
         String inactive = "-fx-background-color: transparent; -fx-text-fill: #6B6F76; -fx-font-size: 12; -fx-font-weight: bold; -fx-padding: 6 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: transparent;";
 
-        btnAvailable.setStyle(status.equals("available") ? active : inactive);
-        btnBusy.setStyle(status.equals("busy") ? active : inactive);
-        btnOnHold.setStyle(status.equals("on_hold") ? active : inactive);
+        btnAvailable.setStyle("available".equals(status) ? active : inactive);
+        btnBusy.setStyle("busy".equals(status) ? active : inactive);
+        btnOnHold.setStyle("on_hold".equals(status) ? active : inactive);
     }
 
     private void loadCurrentPatient(Doctor doctor) {
@@ -156,7 +156,12 @@ public class DoctorDashboardController {
 
         PatientDAO patientDAO = new PatientDAO();
         Patient current = patientDAO.getInConsultForDoctor(doctor.getId());
-        if (current != null) return;
+        if (current != null) {
+            // already consulting — show feedback
+            topSubLabel.setText("Finish your current consultation first.");
+            topSubLabel.setStyle("-fx-font-size: 14; -fx-text-fill: #B14A33; -fx-font-weight: bold;");
+            return;
+        }
 
         patientDAO.updateStatus(patient.getId(), "in_consult");
         DoctorDAO doctorDAO = new DoctorDAO();
@@ -203,7 +208,11 @@ public class DoctorDashboardController {
         PatientDAO patientDAO = new PatientDAO();
         Patient current = patientDAO.getInConsultForDoctor(doctor.getId());
         if (current != null) {
-            patientDAO.updateStatus(current.getId(), "discharged");
+            // only discharge if not already admitted or transferred
+            String currentStatus = current.getStatus();
+            if ("in_consult".equals(currentStatus)) {
+                patientDAO.updateStatus(current.getId(), "discharged");
+            }
         }
         DoctorDAO doctorDAO = new DoctorDAO();
         doctorDAO.updateStatus(doctor.getId(), "available");
@@ -252,7 +261,8 @@ public class DoctorDashboardController {
     }
 
     private String getInitials(String name) {
-        String[] parts = name.split(" ");
+        if (name == null || name.isEmpty()) return "?";
+        String[] parts = name.trim().split(" ");
         if (parts.length >= 2) return ("" + parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
         return ("" + parts[0].charAt(0)).toUpperCase();
     }

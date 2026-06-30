@@ -17,7 +17,7 @@
         <Region prefHeight="20"/>
 
         <Button text="Transfer requests" styleClass="nav-item-active" maxWidth="Infinity"/>
-        <Button text="Patient records" styleClass="nav-item" maxWidth="Infinity"/>
+        <Button text="Patient records" styleClass="nav-item" maxWidth="Infinity" onAction="#goToRecords"/>
 
         <Region VBox.vgrow="ALWAYS"/>
 

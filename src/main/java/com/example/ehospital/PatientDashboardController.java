@@ -41,9 +41,10 @@ public class PatientDashboardController {
         patient = dao.getById(patient.getId());
         SessionManager.loginAsPatient(patient);
 
-        String name = patient.getName();
+        String name = patient.getName() != null ? patient.getName() : "User";
         String initials = getInitials(name);
-        greetingLabel.setText("Good day, " + name.split(" ")[0]);
+        String firstName = name.contains(" ") ? name.split(" ")[0] : name;
+        greetingLabel.setText("Good day, " + firstName);
         String today = LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d"));
         subLabel.setText("Here is where your care stands today, " + today);
         avatarLabel.setText(initials);
@@ -53,10 +54,14 @@ public class PatientDashboardController {
         String status = patient.getStatus();
         if (status != null) {
             statusLabel.setText(capitalize(status));
-            if (status.equals("in_consult")) {
+            if ("in_consult".equals(status)) {
                 statusLabel.getStyleClass().setAll("status-busy");
-            } else if (status.equals("prescribed") || status.equals("discharged")) {
+            } else if ("prescribed".equals(status) || "discharged".equals(status)) {
                 statusLabel.getStyleClass().setAll("status-available");
+            } else if ("admitted".equals(status)) {
+                statusLabel.getStyleClass().setAll("status-busy");
+            } else if ("pending".equals(status)) {
+                statusLabel.getStyleClass().setAll("status-pending");
             }
         }
 
@@ -80,7 +85,7 @@ public class PatientDashboardController {
                 doctorAvatar.setText(getInitials(doctor.getName()));
                 doctorNameLabel.setText("Dr. " + doctor.getName());
                 doctorSpecLabel.setText(doctor.getSpecialty());
-                if (doctor.getStatus().equals("available")) {
+                if ("available".equals(doctor.getStatus())) {
                     doctorStatusLabel.setText("\u25CF Available now");
                     doctorStatusLabel.setStyle("-fx-font-size: 13; -fx-text-fill: #127566; -fx-font-weight: bold;");
                 } else {
@@ -117,12 +122,17 @@ public class PatientDashboardController {
     @FXML
     private void goToConsultation() {
         Patient patient = SessionManager.getPatient();
-        if (patient != null && patient.getAssignedDoctorId() > 0) {
-            loadScreen("patient-chat.fxml");
-        } else {
-            // no doctor assigned yet, go to symptom check
-            loadScreen("symptom-view.fxml");
+        if (patient != null) {
+            // refresh from DB in case doctor was assigned since page loaded
+            PatientDAO dao = new PatientDAO();
+            patient = dao.getById(patient.getId());
+            SessionManager.loginAsPatient(patient);
+            if (patient.getAssignedDoctorId() > 0) {
+                loadScreen("patient-chat.fxml");
+                return;
+            }
         }
+        loadScreen("symptom-view.fxml");
     }
 
     @FXML
@@ -147,7 +157,8 @@ public class PatientDashboardController {
     }
 
     private String getInitials(String name) {
-        String[] parts = name.split(" ");
+        if (name == null || name.isEmpty()) return "?";
+        String[] parts = name.trim().split(" ");
         if (parts.length >= 2) return ("" + parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
         return ("" + parts[0].charAt(0)).toUpperCase();
     }

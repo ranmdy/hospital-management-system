@@ -85,6 +85,26 @@ public class TransferDAO {
         return null;
     }
 
+    public Transfer getActiveByDoctorAndPatient(int doctorId, int patientId) {
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            String sql = "SELECT * FROM transfers WHERE doctor_id = ? AND patient_id = ? AND status IN ('new', 'accepted') ORDER BY created_at DESC LIMIT 1";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, doctorId);
+            stmt.setInt(2, patientId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Transfer t = buildTransfer(rs);
+                conn.close();
+                return t;
+            }
+            conn.close();
+        } catch (Exception e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        return null;
+    }
+
     public void updateStatus(int id, String status) {
         try {
             Connection conn = DatabaseConnection.getConnection();

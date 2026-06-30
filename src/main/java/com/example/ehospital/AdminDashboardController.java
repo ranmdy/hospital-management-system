@@ -4,14 +4,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.util.List;
+import java.util.Optional;
 
 public class AdminDashboardController {
 
@@ -110,7 +110,7 @@ public class AdminDashboardController {
             name.setStyle("-fx-font-size: 15; -fx-font-weight: bold;");
             nameRow.getChildren().add(name);
 
-            if (t.getStatus().equals("new")) {
+            if ("new".equals(t.getStatus())) {
                 Label newBadge = new Label("NEW");
                 newBadge.setStyle("-fx-font-size: 10; -fx-font-weight: bold; -fx-text-fill: #4B3FA6; -fx-background-color: #E9E7F7; -fx-background-radius: 5; -fx-padding: 2 6;");
                 nameRow.getChildren().add(newBadge);
@@ -153,10 +153,10 @@ public class AdminDashboardController {
 
         // urgency pill
         String urg = t.getUrgency();
-        if (urg.equals("emergency")) {
+        if ("emergency".equals(urg)) {
             detailUrgencyPill.setText("Emergency");
             detailUrgencyPill.setStyle("-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-color: #B14A33; -fx-background-radius: 6; -fx-padding: 3 8;");
-        } else if (urg.equals("urgent")) {
+        } else if ("urgent".equals(urg)) {
             detailUrgencyPill.setText("Urgent");
             detailUrgencyPill.setStyle("-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #7A5A12; -fx-background-color: #FAF0D9; -fx-background-radius: 6; -fx-padding: 3 8;");
         } else {
@@ -166,13 +166,13 @@ public class AdminDashboardController {
 
         // status pill
         String status = t.getStatus();
-        if (status.equals("new")) {
+        if ("new".equals(status)) {
             detailStatusPill.setText("New");
             detailStatusPill.getStyleClass().setAll("status-pending");
-        } else if (status.equals("accepted")) {
+        } else if ("accepted".equals(status)) {
             detailStatusPill.setText("Accepted");
             detailStatusPill.getStyleClass().setAll("status-available");
-        } else if (status.equals("declined")) {
+        } else if ("declined".equals(status)) {
             detailStatusPill.setText("Declined");
             detailStatusPill.getStyleClass().setAll("status-busy");
         } else {
@@ -198,14 +198,17 @@ public class AdminDashboardController {
         } else {
             fileStatusLabel.setText("File not shared yet");
             fileStatusLabel.setStyle("-fx-font-size: 13; -fx-text-fill: #8A8F94;");
-            if (status.equals("new")) {
+            if ("new".equals(status)) {
                 fileActionBtn.setVisible(true);
                 fileActionBtn.setManaged(true);
+            } else {
+                fileActionBtn.setVisible(false);
+                fileActionBtn.setManaged(false);
             }
         }
 
         // action buttons
-        if (status.equals("new")) {
+        if ("new".equals(status)) {
             actionButtons.setVisible(true);
             actionButtons.setManaged(true);
             resultBox.setVisible(false);
@@ -213,20 +216,20 @@ public class AdminDashboardController {
         } else {
             actionButtons.setVisible(false);
             actionButtons.setManaged(false);
-            if (status.equals("accepted")) {
+            if ("accepted".equals(status)) {
                 resultBox.setVisible(true);
                 resultBox.setManaged(true);
                 resultLabel.setText("\u2713 Accepted \u00B7 bed reserved");
                 resultLabel.setStyle("-fx-font-size: 13; -fx-text-fill: #1F6E4F; -fx-font-weight: bold;");
                 resultBox.setStyle("-fx-background-color: #EAF5EE; -fx-border-color: #BFE0CE; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 14 16;");
-            } else if (status.equals("declined")) {
+            } else if ("declined".equals(status)) {
                 resultBox.setVisible(true);
                 resultBox.setManaged(true);
                 String reason = t.getDeclineReason() != null ? " \u00B7 " + t.getDeclineReason() : "";
                 resultLabel.setText("Declined" + reason);
                 resultLabel.setStyle("-fx-font-size: 13; -fx-text-fill: #9A4A36; -fx-font-weight: bold;");
                 resultBox.setStyle("-fx-background-color: #FBEEE9; -fx-border-color: #F0D9D0; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 14 16;");
-            } else if (status.equals("arrived")) {
+            } else if ("arrived".equals(status)) {
                 resultBox.setVisible(true);
                 resultBox.setManaged(true);
                 resultLabel.setText("\u2713 Patient transferred & arrived");
@@ -241,19 +244,40 @@ public class AdminDashboardController {
         if (selectedTransfer == null) return;
         TransferDAO dao = new TransferDAO();
         dao.updateStatus(selectedTransfer.getId(), "accepted");
+
+        // decrement available beds
+        if (hospital != null) {
+            HospitalDAO hospitalDAO = new HospitalDAO();
+            hospitalDAO.decrementBed(hospital.getId());
+            hospital = hospitalDAO.getByAdminId(SessionManager.getAdmin().getId());
+        }
+
+        // mark patient as admitted
+        PatientDAO patientDAO = new PatientDAO();
+        patientDAO.updateStatus(selectedTransfer.getPatientId(), "admitted");
+
         selectedTransfer = dao.getById(selectedTransfer.getId());
         selectTransfer(selectedTransfer);
-        loadTransfers();
+        initialize(); // refresh stats + list
     }
 
     @FXML
     private void onDecline() {
         if (selectedTransfer == null) return;
-        TransferDAO dao = new TransferDAO();
-        dao.decline(selectedTransfer.getId(), "Insufficient capacity");
-        selectedTransfer = dao.getById(selectedTransfer.getId());
-        selectTransfer(selectedTransfer);
-        loadTransfers();
+
+        TextInputDialog dialog = new TextInputDialog("Insufficient capacity");
+        dialog.setTitle("Decline Transfer");
+        dialog.setHeaderText("Reason for declining this transfer:");
+        dialog.setContentText("Reason:");
+        Optional<String> result = dialog.showAndWait();
+
+        if (result.isPresent() && !result.get().trim().isEmpty()) {
+            TransferDAO dao = new TransferDAO();
+            dao.decline(selectedTransfer.getId(), result.get().trim());
+            selectedTransfer = dao.getById(selectedTransfer.getId());
+            selectTransfer(selectedTransfer);
+            loadTransfers();
+        }
     }
 
     @FXML
@@ -263,6 +287,11 @@ public class AdminDashboardController {
         dao.requestFile(selectedTransfer.getId());
         selectedTransfer = dao.getById(selectedTransfer.getId());
         selectTransfer(selectedTransfer);
+    }
+
+    @FXML
+    private void goToRecords() {
+        loadScreen("admin-records.fxml");
     }
 
     @FXML
@@ -313,7 +342,8 @@ public class AdminDashboardController {
     }
 
     private String getInitials(String name) {
-        String[] parts = name.split(" ");
+        if (name == null || name.isEmpty()) return "?";
+        String[] parts = name.trim().split(" ");
         if (parts.length >= 2) return ("" + parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
         return ("" + parts[0].charAt(0)).toUpperCase();
     }

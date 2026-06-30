@@ -14,6 +14,8 @@ import javafx.stage.Stage;
 
 import java.util.List;
 
+import javafx.scene.control.Button;
+
 public class DoctorAdmissionsController {
 
     @FXML private Label avatarLabel;
@@ -22,6 +24,7 @@ public class DoctorAdmissionsController {
     @FXML private VBox admitContent;
 
     private static final int TOTAL_BEDS = 6;
+    private Patient currentPatient;
 
     @FXML
     public void initialize() {
@@ -36,7 +39,7 @@ public class DoctorAdmissionsController {
         List<Patient> admitted = patientDAO.getAdmittedForDoctor(doctor.getId());
 
         // get current in-consult patient (for pairing bar)
-        Patient currentPatient = patientDAO.getInConsultForDoctor(doctor.getId());
+        currentPatient = patientDAO.getInConsultForDoctor(doctor.getId());
 
         int freeCount = TOTAL_BEDS - admitted.size();
         if (freeCount < 0) freeCount = 0;
@@ -116,6 +119,10 @@ public class DoctorAdmissionsController {
                 assignLabel.setStyle("-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #1F6E4F; -fx-padding: 10 0 0 0;");
 
                 bedCard.getChildren().addAll(topRow, assignLabel);
+
+                // click to assign patient to this bed
+                final String bed = bedId;
+                bedCard.setOnMouseClicked(e -> assignBed(bed));
             }
 
             bedGrid.getChildren().add(bedCard);
@@ -165,6 +172,28 @@ public class DoctorAdmissionsController {
         }
     }
 
+    private void assignBed(String bedId) {
+        if (currentPatient == null) {
+            // show warning — no patient to assign
+            Label warn = new Label("No patient currently in consultation to assign.");
+            warn.setStyle("-fx-font-size: 14; -fx-text-fill: #B14A33; -fx-font-weight: bold;");
+            admitContent.getChildren().add(warn);
+            return;
+        }
+
+        PatientDAO patientDAO = new PatientDAO();
+        patientDAO.updateStatus(currentPatient.getId(), "admitted");
+
+        Doctor doctor = SessionManager.getDoctor();
+        ChatDAO chatDAO = new ChatDAO();
+        chatDAO.sendMessage(doctor.getId(), currentPatient.getId(), "doctor",
+                "You have been admitted to bed " + bedId + ". The care team will take over.");
+
+        // refresh the screen
+        admitContent.getChildren().clear();
+        initialize();
+    }
+
     @FXML
     private void goToDashboard() { loadScreen("doctor-dashboard.fxml"); }
 
@@ -194,7 +223,8 @@ public class DoctorAdmissionsController {
     }
 
     private String getInitials(String name) {
-        String[] parts = name.split(" ");
+        if (name == null || name.isEmpty()) return "?";
+        String[] parts = name.trim().split(" ");
         if (parts.length >= 2) return ("" + parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
         return ("" + parts[0].charAt(0)).toUpperCase();
     }

@@ -48,6 +48,7 @@ public class LoginController {
         String password = passwordField.getText();
 
         if (email.isEmpty() || password.isEmpty()) {
+            messageLabel.getStyleClass().setAll("error-label");
             messageLabel.setText("Please fill in all fields.");
             return;
         }
@@ -59,6 +60,7 @@ public class LoginController {
                 SessionManager.loginAsPatient(patient);
                 loadScreen("patient-dashboard.fxml");
             } else {
+                messageLabel.getStyleClass().setAll("error-label");
                 messageLabel.setText("Wrong email or password.");
             }
         } else if (selectedRole.equals("doctor")) {
@@ -68,6 +70,7 @@ public class LoginController {
                 SessionManager.loginAsDoctor(doctor);
                 loadScreen("doctor-dashboard.fxml");
             } else {
+                messageLabel.getStyleClass().setAll("error-label");
                 messageLabel.setText("Wrong email or password.");
             }
         } else if (selectedRole.equals("admin")) {
@@ -77,6 +80,7 @@ public class LoginController {
                 SessionManager.loginAsAdmin(admin);
                 loadScreen("admin-dashboard.fxml");
             } else {
+                messageLabel.getStyleClass().setAll("error-label");
                 messageLabel.setText("Wrong email or password.");
             }
         }

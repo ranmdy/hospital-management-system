@@ -31,6 +31,7 @@ public class DoctorTransferController {
     private List<Hospital> hospitals;
     private String urgency = "routine";
     private boolean fileSend = true;
+    private java.util.Timer redirectTimer;
 
     @FXML
     public void initialize() {
@@ -136,7 +137,8 @@ public class DoctorTransferController {
             messageLabel.setText("Transfer request sent to " + destHospital.getName() + "!");
 
             // go back to chat after a short delay
-            new java.util.Timer(true).schedule(new java.util.TimerTask() {
+            redirectTimer = new java.util.Timer(true);
+            redirectTimer.schedule(new java.util.TimerTask() {
                 @Override
                 public void run() {
                     javafx.application.Platform.runLater(() -> loadScreen("doctor-chat.fxml"));
@@ -166,6 +168,10 @@ public class DoctorTransferController {
     }
 
     private void loadScreen(String fxml) {
+        if (redirectTimer != null) {
+            redirectTimer.cancel();
+            redirectTimer = null;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Stage stage = (Stage) avatarLabel.getScene().getWindow();
@@ -176,7 +182,8 @@ public class DoctorTransferController {
     }
 
     private String getInitials(String name) {
-        String[] parts = name.split(" ");
+        if (name == null || name.isEmpty()) return "?";
+        String[] parts = name.trim().split(" ");
         if (parts.length >= 2) return ("" + parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
         return ("" + parts[0].charAt(0)).toUpperCase();
     }

@@ -23,6 +23,7 @@ public class SymptomController {
 
     private String illnessClass;
     private String specialty;
+    private java.util.Timer redirectTimer;
 
     @FXML
     public void initialize() {
@@ -99,7 +100,8 @@ public class SymptomController {
         submitBtn.setDisable(true);
 
         // go to dashboard after 2 seconds so patient sees the message
-        new java.util.Timer(true).schedule(new java.util.TimerTask() {
+        redirectTimer = new java.util.Timer(true);
+        redirectTimer.schedule(new java.util.TimerTask() {
             @Override
             public void run() {
                 Platform.runLater(() -> loadScreen("patient-dashboard.fxml"));
@@ -134,6 +136,10 @@ public class SymptomController {
     }
 
     private void loadScreen(String fxml) {
+        if (redirectTimer != null) {
+            redirectTimer.cancel();
+            redirectTimer = null;
+        }
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Stage stage = (Stage) symptomArea.getScene().getWindow();
@@ -144,7 +150,8 @@ public class SymptomController {
     }
 
     private String getInitials(String name) {
-        String[] parts = name.split(" ");
+        if (name == null || name.isEmpty()) return "?";
+        String[] parts = name.trim().split(" ");
         if (parts.length >= 2) return ("" + parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
         return ("" + parts[0].charAt(0)).toUpperCase();
     }
