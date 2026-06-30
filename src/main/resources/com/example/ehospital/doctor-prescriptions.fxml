@@ -17,7 +17,7 @@
         <Button text="Dashboard" styleClass="nav-item" maxWidth="Infinity" onAction="#goToDashboard"/>
         <Button text="Consultation" styleClass="nav-item" maxWidth="Infinity" onAction="#goToConsultation"/>
         <Button text="Admission" styleClass="nav-item" maxWidth="Infinity" onAction="#goToAdmission"/>
-        <Button text="Transfer" styleClass="nav-item" maxWidth="Infinity"/>
+        <Button text="Transfer" styleClass="nav-item" maxWidth="Infinity" onAction="#goToTransfer"/>
         <Button text="Prescription" styleClass="nav-item-active" maxWidth="Infinity"/>
         <Region VBox.vgrow="ALWAYS"/>
         <VBox styleClass="sidebar-divider" spacing="8">

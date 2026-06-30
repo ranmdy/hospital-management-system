@@ -84,3 +84,11 @@ CREATE TABLE IF NOT EXISTS transfers (
     FOREIGN KEY (from_hospital_id) REFERENCES hospitals(id),
     FOREIGN KEY (to_hospital_id) REFERENCES hospitals(id)
 );
+
+-- Sample partner hospitals
+INSERT IGNORE INTO hospitals (id, name, location, total_beds, available_beds) VALUES
+(1, 'Lagoon Hospital', 'Victoria Island', 120, 18),
+(2, 'Reddington Hospital', 'Ikeja', 80, 12),
+(3, 'St. Nicholas Hospital', 'Lagos Island', 60, 8),
+(4, 'EKO Hospital', 'Surulere', 100, 15),
+(5, 'First Consultant Hospital', 'Ikoyi', 50, 6);

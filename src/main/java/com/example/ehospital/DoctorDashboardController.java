@@ -213,6 +213,9 @@ public class DoctorDashboardController {
     }
 
     @FXML
+    private void goToTransfer() { loadScreen("doctor-transfer.fxml"); }
+
+    @FXML
     private void goToConsultation() {
         loadScreen("doctor-chat.fxml");
     }

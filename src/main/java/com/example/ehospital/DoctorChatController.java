@@ -255,6 +255,12 @@ public class DoctorChatController {
     }
 
     @FXML
+    private void onTransfer() {
+        stopPolling();
+        loadScreen("doctor-transfer.fxml");
+    }
+
+    @FXML
     private void goToDashboard() {
         stopPolling();
         loadScreen("doctor-dashboard.fxml");

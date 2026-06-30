@@ -7,6 +7,8 @@ import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.List;
+
 public class SignupController {
 
     @FXML private TextField nameField;
@@ -16,12 +18,27 @@ public class SignupController {
     @FXML private TextField licenseField;
     @FXML private VBox specialtyBox;
     @FXML private VBox licenseBox;
+    @FXML private VBox hospitalBox;
+    @FXML private ComboBox<String> hospitalCombo;
     @FXML private VBox patientCard;
     @FXML private VBox doctorCard;
     @FXML private VBox adminCard;
     @FXML private Label messageLabel;
 
     private String selectedRole = "patient";
+    private List<Hospital> hospitals;
+
+    @FXML
+    public void initialize() {
+        HospitalDAO hospitalDAO = new HospitalDAO();
+        hospitals = hospitalDAO.getAll();
+        for (Hospital h : hospitals) {
+            hospitalCombo.getItems().add(h.getName() + " \u2014 " + h.getLocation());
+        }
+        if (!hospitals.isEmpty()) {
+            hospitalCombo.getSelectionModel().selectFirst();
+        }
+    }
 
     @FXML
     private void selectPatient() {
@@ -33,6 +50,8 @@ public class SignupController {
         specialtyBox.setManaged(false);
         licenseBox.setVisible(false);
         licenseBox.setManaged(false);
+        hospitalBox.setVisible(false);
+        hospitalBox.setManaged(false);
     }
 
     @FXML
@@ -45,6 +64,8 @@ public class SignupController {
         specialtyBox.setManaged(true);
         licenseBox.setVisible(true);
         licenseBox.setManaged(true);
+        hospitalBox.setVisible(false);
+        hospitalBox.setManaged(false);
     }
 
     @FXML
@@ -57,6 +78,8 @@ public class SignupController {
         specialtyBox.setManaged(false);
         licenseBox.setVisible(false);
         licenseBox.setManaged(false);
+        hospitalBox.setVisible(true);
+        hospitalBox.setManaged(true);
     }
 
     @FXML
@@ -87,8 +110,15 @@ public class SignupController {
             DoctorDAO dao = new DoctorDAO();
             success = dao.register(name, email, password, specialty, license);
         } else if (selectedRole.equals("admin")) {
+            int selectedIndex = hospitalCombo.getSelectionModel().getSelectedIndex();
+            if (selectedIndex < 0) {
+                messageLabel.setText("Please select a hospital.");
+                messageLabel.getStyleClass().setAll("error-label");
+                return;
+            }
+            int hospitalId = hospitals.get(selectedIndex).getId();
             HospitalAdminDAO dao = new HospitalAdminDAO();
-            success = dao.register(name, email, password);
+            success = dao.register(name, email, password, hospitalId);
         }
 
         if (success) {

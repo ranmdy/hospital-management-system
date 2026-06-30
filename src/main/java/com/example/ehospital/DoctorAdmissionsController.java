@@ -175,6 +175,9 @@ public class DoctorAdmissionsController {
     private void goToPrescription() { loadScreen("doctor-prescriptions.fxml"); }
 
     @FXML
+    private void goToTransfer() { loadScreen("doctor-transfer.fxml"); }
+
+    @FXML
     private void onLogout() {
         SessionManager.logout();
         loadScreen("login-view.fxml");

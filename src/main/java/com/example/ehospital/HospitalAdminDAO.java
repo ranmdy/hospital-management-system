@@ -7,13 +7,22 @@ import java.sql.ResultSet;
 public class HospitalAdminDAO {
 
     public boolean register(String name, String email, String password) {
+        return register(name, email, password, 0);
+    }
+
+    public boolean register(String name, String email, String password, int hospitalId) {
         try {
             Connection conn = DatabaseConnection.getConnection();
-            String sql = "INSERT INTO hospital_admins (name, email, password) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO hospital_admins (name, email, password, hospital_id) VALUES (?, ?, ?, ?)";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setString(1, name);
             stmt.setString(2, email);
             stmt.setString(3, password);
+            if (hospitalId > 0) {
+                stmt.setInt(4, hospitalId);
+            } else {
+                stmt.setNull(4, java.sql.Types.INTEGER);
+            }
             stmt.executeUpdate();
             conn.close();
             return true;

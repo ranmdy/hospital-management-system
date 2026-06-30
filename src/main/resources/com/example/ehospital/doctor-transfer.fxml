@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.ehospital.DoctorTransferController"
+      stylesheets="@styles.css">
+
+    <!-- SIDEBAR -->
+    <VBox styleClass="sidebar" spacing="3">
+        <HBox alignment="CENTER_LEFT" spacing="11">
+            <Label text="+" styleClass="sidebar-logo"/>
+            <Label text="Ranmdy" styleClass="sidebar-brand"/>
+        </HBox>
+        <Region prefHeight="20"/>
+        <Button text="Dashboard" styleClass="nav-item" maxWidth="Infinity" onAction="#goToDashboard"/>
+        <Button text="Consultation" styleClass="nav-item" maxWidth="Infinity" onAction="#goToConsultation"/>
+        <Button text="Admission" styleClass="nav-item" maxWidth="Infinity" onAction="#goToAdmission"/>
+        <Button text="Transfer" styleClass="nav-item-active" maxWidth="Infinity"/>
+        <Button text="Prescription" styleClass="nav-item" maxWidth="Infinity" onAction="#goToPrescription"/>
+        <Region VBox.vgrow="ALWAYS"/>
+        <VBox styleClass="sidebar-divider" spacing="8">
+            <HBox alignment="CENTER_LEFT" spacing="11">
+                <Label fx:id="avatarLabel" styleClass="avatar, avatar-blue"/>
+                <VBox>
+                    <Label fx:id="userNameLabel" styleClass="sidebar-user-name"/>
+                    <Label fx:id="docSpecLabel" styleClass="sidebar-user-sub"/>
+                </VBox>
+            </HBox>
+            <Button text="Log out" styleClass="btn-logout" onAction="#onLogout"/>
+        </VBox>
+    </VBox>
+
+    <!-- MAIN -->
+    <VBox HBox.hgrow="ALWAYS">
+        <HBox styleClass="topbar" alignment="CENTER_LEFT">
+            <VBox>
+                <Label text="Transfer patient" styleClass="topbar-title"/>
+                <Label text="Refer to a partner hospital" styleClass="topbar-sub"/>
+            </VBox>
+        </HBox>
+
+        <ScrollPane fitToWidth="true" style="-fx-background-color: #F4F1EC; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
+            <VBox styleClass="content-area" spacing="18" maxWidth="720">
+                <VBox styleClass="card" spacing="16" style="-fx-padding: 26;">
+
+                    <!-- Patient info header -->
+                    <HBox spacing="13" alignment="CENTER_LEFT" style="-fx-padding: 0 0 18 0; -fx-border-color: #EDEAE2; -fx-border-width: 0 0 1 0;">
+                        <Label fx:id="patientAvatar" style="-fx-background-color: #E9E7F7; -fx-text-fill: #4B3FA6; -fx-pref-width: 46; -fx-pref-height: 46; -fx-background-radius: 13; -fx-alignment: center; -fx-font-weight: bold; -fx-font-size: 15;"/>
+                        <VBox HBox.hgrow="ALWAYS">
+                            <Label fx:id="patientNameLabel" style="-fx-font-size: 17; -fx-font-weight: bold;"/>
+                            <Label fx:id="patientInfoLabel" style="-fx-font-size: 13; -fx-text-fill: #8A8F94;"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- Destination hospital -->
+                    <HBox spacing="14">
+                        <VBox spacing="6" HBox.hgrow="ALWAYS">
+                            <Label text="Destination hospital" styleClass="field-label"/>
+                            <ComboBox fx:id="hospitalCombo" maxWidth="Infinity" styleClass="text-input"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- Urgency -->
+                    <VBox spacing="6">
+                        <Label text="Urgency" styleClass="field-label"/>
+                        <HBox fx:id="urgencyBar" spacing="8">
+                            <Button fx:id="btnRoutine" text="Routine" onAction="#setRoutine"
+                                    style="-fx-background-color: #1F4D8F; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-padding: 8 18; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: transparent;"/>
+                            <Button fx:id="btnUrgent" text="Urgent" onAction="#setUrgent"
+                                    style="-fx-background-color: #EDEAE2; -fx-text-fill: #4A4F57; -fx-font-size: 13; -fx-font-weight: bold; -fx-padding: 8 18; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: transparent;"/>
+                            <Button fx:id="btnEmergency" text="Emergency" onAction="#setEmergency"
+                                    style="-fx-background-color: #EDEAE2; -fx-text-fill: #4A4F57; -fx-font-size: 13; -fx-font-weight: bold; -fx-padding: 8 18; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: transparent;"/>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Clinical note -->
+                    <VBox spacing="6">
+                        <Label text="Reason for transfer / clinical note" styleClass="field-label"/>
+                        <TextArea fx:id="reasonField" promptText="Describe reason for referral..." prefRowCount="4" wrapText="true" styleClass="text-input"/>
+                    </VBox>
+
+                    <!-- Patient file options -->
+                    <VBox spacing="6">
+                        <Label text="Patient file" styleClass="field-label"/>
+                        <HBox spacing="11">
+                            <VBox fx:id="fileSendCard" onMouseClicked="#selectFileSend" HBox.hgrow="ALWAYS"
+                                  style="-fx-background-color: white; -fx-border-color: #1F4D8F; -fx-border-width: 2; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 14; -fx-cursor: hand;">
+                                <Label text="Send now" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+                                <Label text="Attach the full file with this request." style="-fx-font-size: 12; -fx-text-fill: #8A8F94;" wrapText="true"/>
+                            </VBox>
+                            <VBox fx:id="fileRequestCard" onMouseClicked="#selectFileRequest" HBox.hgrow="ALWAYS"
+                                  style="-fx-background-color: white; -fx-border-color: #E8E4DC; -fx-border-width: 1.5; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 14; -fx-cursor: hand;">
+                                <Label text="Let hospital request" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+                                <Label text="Share only if they ask, with your approval." style="-fx-font-size: 12; -fx-text-fill: #8A8F94;" wrapText="true"/>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+
+                    <Button text="Send transfer request" styleClass="btn-primary" maxWidth="Infinity" onAction="#onSubmit"
+                            style="-fx-background-color: #4B3FA6; -fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: bold; -fx-padding: 14; -fx-background-radius: 12;"/>
+
+                    <Label fx:id="messageLabel" styleClass="error-label" wrapText="true"/>
+
+                    <Label text="Cancel and return to consultation" style="-fx-font-size: 13; -fx-text-fill: #9A9EA5; -fx-cursor: hand; -fx-alignment: center;" alignment="CENTER" onMouseClicked="#goToConsultation"/>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </VBox>
+</HBox>

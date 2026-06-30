@@ -92,6 +92,10 @@
                         <Label text="License number" styleClass="field-label"/>
                         <TextField fx:id="licenseField" promptText="MD-PUL-44821" styleClass="text-input"/>
                     </VBox>
+                    <VBox fx:id="hospitalBox" spacing="6" visible="false" managed="false">
+                        <Label text="Hospital" styleClass="field-label"/>
+                        <ComboBox fx:id="hospitalCombo" maxWidth="Infinity" styleClass="text-input"/>
+                    </VBox>
                     <VBox spacing="6">
                         <Label text="Email" styleClass="field-label"/>
                         <TextField fx:id="emailField" promptText="you@email.com" styleClass="text-input"/>

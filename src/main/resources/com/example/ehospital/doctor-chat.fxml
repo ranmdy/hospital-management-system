@@ -17,7 +17,7 @@
         <Button text="Dashboard" styleClass="nav-item" maxWidth="Infinity" onAction="#goToDashboard"/>
         <Button text="Consultation" styleClass="nav-item-active" maxWidth="Infinity"/>
         <Button text="Admission" styleClass="nav-item" maxWidth="Infinity" onAction="#goToAdmission"/>
-        <Button text="Transfer" styleClass="nav-item" maxWidth="Infinity"/>
+        <Button text="Transfer" styleClass="nav-item" maxWidth="Infinity" onAction="#onTransfer"/>
         <Button text="Prescription" styleClass="nav-item" maxWidth="Infinity" onAction="#goToPrescription"/>
         <Region VBox.vgrow="ALWAYS"/>
         <VBox styleClass="sidebar-divider" spacing="8">
@@ -79,7 +79,7 @@
                         <Button onAction="#onAdmit" maxWidth="Infinity"
                                 style="-fx-background-color: white; -fx-text-fill: #B14A33; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 14; -fx-background-radius: 12; -fx-cursor: hand; -fx-border-color: #EBC6BB; -fx-alignment: center-left;"
                                 text="Admit to hospital"/>
-                        <Button maxWidth="Infinity"
+                        <Button maxWidth="Infinity" onAction="#onTransfer"
                                 style="-fx-background-color: white; -fx-text-fill: #4B3FA6; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 14; -fx-background-radius: 12; -fx-cursor: hand; -fx-border-color: #D2CCEC; -fx-alignment: center-left;"
                                 text="Transfer to hospital"/>
                     </VBox>
