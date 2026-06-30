@@ -39,7 +39,7 @@
 
         <Region VBox.vgrow="ALWAYS"/>
 
-        <Label text="Ranmdy Healthcare Center" styleClass="auth-footer"/>
+        <Label text="Ranmdy Healthcare Center · NDPR-compliant" styleClass="auth-footer"/>
     </VBox>
 
     <!-- RIGHT: Register form -->

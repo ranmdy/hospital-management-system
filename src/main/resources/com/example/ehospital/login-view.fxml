@@ -39,14 +39,14 @@
 
         <Region VBox.vgrow="ALWAYS"/>
 
-        <Label text="Ranmdy Healthcare Center" styleClass="auth-footer"/>
+        <Label text="Ranmdy Healthcare Center · NDPR-compliant" styleClass="auth-footer"/>
     </VBox>
 
     <!-- RIGHT: Login form -->
     <VBox styleClass="auth-right" HBox.hgrow="ALWAYS" alignment="CENTER">
         <VBox maxWidth="380" spacing="0">
             <Label text="Welcome back" styleClass="auth-heading"/>
-            <Label text="Sign in to your account to continue." styleClass="auth-sub">
+            <Label text="Sign in or create an account to continue." styleClass="auth-sub">
                 <VBox.margin><Insets bottom="20"/></VBox.margin>
             </Label>
 

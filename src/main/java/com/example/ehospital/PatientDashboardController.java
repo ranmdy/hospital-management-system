@@ -3,9 +3,13 @@ package com.example.ehospital;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class PatientDashboardController {
 
@@ -22,7 +26,10 @@ public class PatientDashboardController {
     @FXML private Label doctorStatusLabel;
     @FXML private VBox rxCard;
     @FXML private Label rxCardText;
+    @FXML private Label rxViewLink;
     @FXML private Label admitCardText;
+    @FXML private Label doctorLicenseLabel;
+    @FXML private Button consultButton;
 
     @FXML
     public void initialize() {
@@ -37,7 +44,8 @@ public class PatientDashboardController {
         String name = patient.getName();
         String initials = getInitials(name);
         greetingLabel.setText("Good day, " + name.split(" ")[0]);
-        subLabel.setText("Here is where your care stands today.");
+        String today = LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM d"));
+        subLabel.setText("Here is where your care stands today, " + today);
         avatarLabel.setText(initials);
         userNameLabel.setText(name);
 
@@ -58,6 +66,10 @@ public class PatientDashboardController {
             consultTitle.setText(specialty + " consult");
             consultDesc.setText("Your symptoms were classified as " + patient.getIllnessClass()
                     + " and routed to a " + specialty + ".");
+            if (patient.getAssignedDoctorId() > 0) {
+                consultButton.setText("Open consultation \u2192");
+                consultButton.setOnAction(e -> goToConsultation());
+            }
         }
 
         // update doctor card
@@ -69,11 +81,14 @@ public class PatientDashboardController {
                 doctorNameLabel.setText("Dr. " + doctor.getName());
                 doctorSpecLabel.setText(doctor.getSpecialty());
                 if (doctor.getStatus().equals("available")) {
-                    doctorStatusLabel.setText("● Available now");
+                    doctorStatusLabel.setText("\u25CF Available now");
                     doctorStatusLabel.setStyle("-fx-font-size: 13; -fx-text-fill: #127566; -fx-font-weight: bold;");
                 } else {
-                    doctorStatusLabel.setText("● " + capitalize(doctor.getStatus()));
+                    doctorStatusLabel.setText("\u25CF " + capitalize(doctor.getStatus()));
                     doctorStatusLabel.setStyle("-fx-font-size: 13; -fx-text-fill: #E65100; -fx-font-weight: bold;");
+                }
+                if (doctor.getLicenseNumber() != null && !doctor.getLicenseNumber().isEmpty()) {
+                    doctorLicenseLabel.setText("License " + doctor.getLicenseNumber());
                 }
             }
         }
@@ -82,8 +97,9 @@ public class PatientDashboardController {
         PrescriptionDAO rxDAO = new PrescriptionDAO();
         Prescription rx = rxDAO.getByPatientId(patient.getId());
         if (rx != null) {
-            rxCardText.setText(rx.getMedicine() + " — " + rx.getDosage());
-            rxCardText.setStyle("-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #1A1C20;");
+            rxCardText.setText(rx.getMedicine() + "\n" + rx.getDosage());
+            rxCardText.setStyle("-fx-font-size: 15; -fx-font-weight: bold; -fx-text-fill: #1A1C20;");
+            rxViewLink.setText("View \u2192");
         }
 
         // update admission card

@@ -28,6 +28,8 @@ public class PatientChatController {
     @FXML private VBox chatBox;
     @FXML private TextField messageField;
     @FXML private VBox rxPanel;
+    @FXML private Label detailsName;
+    @FXML private Label detailsInfo;
 
     private Patient patient;
     private Doctor doctor;
@@ -49,6 +51,10 @@ public class PatientChatController {
         avatarLabel.setText(getInitials(patient.getName()));
         userNameLabel.setText(patient.getName());
 
+        // patient details panel
+        detailsName.setText(patient.getName());
+        detailsInfo.setText(patient.getEmail());
+
         // load assigned doctor info
         if (patient.getAssignedDoctorId() > 0) {
             DoctorDAO doctorDAO = new DoctorDAO();
@@ -56,7 +62,7 @@ public class PatientChatController {
             if (doctor != null) {
                 doctorChatAvatar.setText(getInitials(doctor.getName()));
                 doctorChatName.setText("Dr. " + doctor.getName());
-                doctorChatSpec.setText(doctor.getSpecialty());
+                doctorChatSpec.setText("\u25CF " + doctor.getSpecialty() + ", Online");
             }
         }
 

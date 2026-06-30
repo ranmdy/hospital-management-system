@@ -14,6 +14,8 @@ public class SymptomController {
     @FXML private HBox classChip;
     @FXML private Label classLabel;
     @FXML private Label specialtyLabel;
+    @FXML private Label classHint;
+    @FXML private Label queueHint;
     @FXML private Button submitBtn;
     @FXML private Label messageLabel;
     @FXML private Label avatarLabel;
@@ -46,8 +48,13 @@ public class SymptomController {
         specialtyLabel.setText(specialty);
         classChip.setVisible(true);
         classChip.setManaged(true);
+        classHint.setVisible(false);
+        classHint.setManaged(false);
         submitBtn.setDisable(false);
         messageLabel.setText("");
+        queueHint.setText("You'll be placed in " + specialty + " queue. Average wait \u00B7 under 10 min.");
+        queueHint.setVisible(true);
+        queueHint.setManaged(true);
     }
 
     @FXML

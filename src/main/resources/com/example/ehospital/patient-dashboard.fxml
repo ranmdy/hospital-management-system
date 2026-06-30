@@ -50,8 +50,8 @@
         <!-- CONTENT -->
         <ScrollPane fitToWidth="true" style="-fx-background-color: #F4F1EC; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
             <VBox styleClass="content-area" spacing="18">
-                <Label fx:id="greetingLabel" style="-fx-font-size: 26; -fx-font-weight: bold; -fx-text-fill: #1A1C20;"/>
-                <Label fx:id="subLabel" style="-fx-font-size: 14; -fx-text-fill: #8A8F94;"/>
+                <Label fx:id="greetingLabel" style="-fx-font-size: 26; -fx-font-weight: bold; -fx-text-fill: #1A1C20; -fx-letter-spacing: -0.02em;"/>
+                <Label fx:id="subLabel" style="-fx-font-size: 14; -fx-text-fill: #8A8F94; -fx-padding: 0 0 6 0;"/>
 
                 <!-- Consultation status card -->
                 <HBox spacing="18">
@@ -60,7 +60,7 @@
                         <Label fx:id="consultTitle" style="-fx-font-size: 22; -fx-font-weight: bold; -fx-text-fill: white;" text="No active consultation"/>
                         <Label fx:id="consultDesc" style="-fx-font-size: 14; -fx-text-fill: #A9BBD6;" wrapText="true" text="Submit your symptoms to get matched with a doctor."/>
                         <Region prefHeight="6"/>
-                        <Button text="Describe symptoms →" styleClass="btn-primary" style="-fx-background-color: white; -fx-text-fill: #13294C;" onAction="#goToSymptom"/>
+                        <Button fx:id="consultButton" text="Describe symptoms →" styleClass="btn-primary" style="-fx-background-color: white; -fx-text-fill: #13294C;" onAction="#goToSymptom"/>
                     </VBox>
 
                     <VBox styleClass="card" minWidth="240" maxWidth="280" spacing="8">
@@ -73,18 +73,24 @@
                             </VBox>
                         </HBox>
                         <Label fx:id="doctorStatusLabel" style="-fx-font-size: 13; -fx-text-fill: #127566; -fx-font-weight: bold;" text=""/>
+                        <Region VBox.vgrow="ALWAYS"/>
+                        <Label fx:id="doctorLicenseLabel" style="-fx-font-size: 12; -fx-text-fill: #9A9EA5; -fx-padding: 8 0 0 0;" text=""/>
                     </VBox>
                 </HBox>
 
                 <!-- Bottom cards -->
                 <HBox spacing="18">
                     <VBox fx:id="rxCard" styleClass="card" HBox.hgrow="ALWAYS" spacing="8">
-                        <Label text="ACTIVE PRESCRIPTION" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="ACTIVE PRESCRIPTION" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label fx:id="rxViewLink" text="" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #1F4D8F; -fx-cursor: hand;" onMouseClicked="#goToPrescription"/>
+                        </HBox>
                         <Label fx:id="rxCardText" text="No active prescription yet. Your doctor will issue one here after the consultation." style="-fx-font-size: 13; -fx-text-fill: #9A9EA5;" wrapText="true"/>
                     </VBox>
                     <VBox styleClass="card" HBox.hgrow="ALWAYS" spacing="8">
                         <Label text="ADMISSION &amp; TRANSFER" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
-                        <Label fx:id="admitCardText" text="You are not currently admitted. If your condition is severe, your doctor can admit you to a bed." style="-fx-font-size: 13; -fx-text-fill: #9A9EA5;" wrapText="true"/>
+                        <Label fx:id="admitCardText" text="You are not currently admitted. If your condition is severe, your doctor can admit you to a bed or transfer you to a partner hospital." style="-fx-font-size: 13; -fx-text-fill: #9A9EA5;" wrapText="true"/>
                     </VBox>
                 </HBox>
 
@@ -92,9 +98,9 @@
                 <HBox styleClass="card-gradient" alignment="CENTER_LEFT">
                     <VBox HBox.hgrow="ALWAYS">
                         <Label text="Not feeling well? Describe your symptoms." style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: white;"/>
-                        <Label text="We will match you with the right specialist." style="-fx-font-size: 14; -fx-text-fill: #B8CCEF;"/>
+                        <Label text="We'll classify them and match you to the right specialist." style="-fx-font-size: 14; -fx-text-fill: #CADAF2;"/>
                     </VBox>
-                    <Button text="Start →" styleClass="btn-primary" style="-fx-background-color: white; -fx-text-fill: #1F4D8F;" onAction="#goToSymptom"/>
+                    <Button text="Describe symptoms" styleClass="btn-primary" style="-fx-background-color: white; -fx-text-fill: #1F4D8F;" onAction="#goToSymptom"/>
                 </HBox>
             </VBox>
         </ScrollPane>

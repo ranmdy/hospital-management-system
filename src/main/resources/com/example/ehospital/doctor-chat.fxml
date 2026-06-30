@@ -79,6 +79,9 @@
                         <Button onAction="#onAdmit" maxWidth="Infinity"
                                 style="-fx-background-color: white; -fx-text-fill: #B14A33; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 14; -fx-background-radius: 12; -fx-cursor: hand; -fx-border-color: #EBC6BB; -fx-alignment: center-left;"
                                 text="Admit to hospital"/>
+                        <Button maxWidth="Infinity"
+                                style="-fx-background-color: white; -fx-text-fill: #4B3FA6; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 14; -fx-background-radius: 12; -fx-cursor: hand; -fx-border-color: #D2CCEC; -fx-alignment: center-left;"
+                                text="Transfer to hospital"/>
                     </VBox>
 
                     <!-- Prescription form (hidden by default) -->

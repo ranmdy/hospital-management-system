@@ -47,36 +47,32 @@
 
         <!-- CONTENT -->
         <ScrollPane fitToWidth="true" style="-fx-background-color: #F4F1EC; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
-            <VBox styleClass="content-area" spacing="18" maxWidth="680">
-                <VBox styleClass="card" spacing="14">
-                    <Label text="DESCRIBE YOUR SYMPTOMS" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
-                    <Label text="Tell us how you are feeling. Be as detailed as possible — mention body parts, duration, and severity." style="-fx-font-size: 14; -fx-text-fill: #6B6F76;" wrapText="true"/>
-                    <TextArea fx:id="symptomArea" promptText="e.g. I have had a persistent cough for 3 days with mild fever and difficulty breathing at night..."
-                              prefRowCount="5" wrapText="true" styleClass="text-input" style="-fx-pref-height: 120;"/>
+            <VBox styleClass="content-area" spacing="18" maxWidth="760">
+                <VBox styleClass="card" spacing="14" style="-fx-padding: 26;">
+                    <Label text="What are you experiencing?" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: #1A1C20;"/>
+                    <Label text="Describe your symptoms in your own words. We'll classify the illness and route you to a specialist." style="-fx-font-size: 14; -fx-text-fill: #8A8F94;" wrapText="true"/>
+                    <TextArea fx:id="symptomArea" promptText="e.g. dry cough, fever, trouble breathing..."
+                              prefRowCount="5" wrapText="true" styleClass="text-input" style="-fx-pref-height: 140;"/>
 
-                    <!-- Classification chip -->
-                    <HBox fx:id="classChip" spacing="8" alignment="CENTER_LEFT" visible="false" managed="false">
-                        <Label text="Classification:" style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #4A4F57;"/>
-                        <Label fx:id="classLabel" styleClass="status-available" text=""/>
-                        <Label text="→" style="-fx-text-fill: #8A8F94;"/>
-                        <Label fx:id="specialtyLabel" style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #1F4D8F;" text=""/>
-                    </HBox>
+                    <!-- Auto-classified result box -->
+                    <VBox style="-fx-background-color: #F3F7FD; -fx-border-color: #D7E3F4; -fx-border-radius: 13; -fx-background-radius: 13; -fx-padding: 16 18;" spacing="10">
+                        <Label text="AUTO-CLASSIFIED RESULT" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #6E84A8;"/>
+                        <HBox fx:id="classChip" spacing="8" alignment="CENTER_LEFT" visible="false" managed="false">
+                            <Label fx:id="classLabel" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-color: #1F4D8F; -fx-background-radius: 20; -fx-padding: 7 14;"/>
+                            <Label text="&#x2192;" style="-fx-text-fill: #8A8F94; -fx-font-size: 16;"/>
+                            <Label fx:id="specialtyLabel" style="-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #1F4D8F; -fx-background-color: white; -fx-background-radius: 20; -fx-padding: 6 14; -fx-border-color: #1F4D8F; -fx-border-radius: 20; -fx-border-width: 1.5;"/>
+                        </HBox>
+                        <Label fx:id="classHint" text="Click Classify or start typing to see the matched specialty." style="-fx-font-size: 13; -fx-text-fill: #8A9ABA;"/>
+                    </VBox>
 
                     <HBox spacing="12">
                         <Button text="Classify" styleClass="btn-primary" style="-fx-background-color: #EDEAE2; -fx-text-fill: #4A4F57;" onAction="#onClassify"/>
-                        <Button fx:id="submitBtn" text="Submit to doctor →" styleClass="btn-primary" onAction="#onSubmit" disable="true"/>
                     </HBox>
 
-                    <Label fx:id="messageLabel" styleClass="error-label" wrapText="true"/>
-                </VBox>
+                    <Button fx:id="submitBtn" text="Submit &amp; start consultation" styleClass="btn-primary" maxWidth="Infinity" onAction="#onSubmit" disable="true"/>
 
-                <!-- Info card -->
-                <VBox styleClass="card" spacing="8">
-                    <Label text="HOW IT WORKS" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
-                    <Label text="1. Describe your symptoms in the box above" style="-fx-font-size: 14; -fx-text-fill: #3A3F47;"/>
-                    <Label text="2. Click Classify to see which illness category matches" style="-fx-font-size: 14; -fx-text-fill: #3A3F47;"/>
-                    <Label text="3. Submit to get matched with an available specialist" style="-fx-font-size: 14; -fx-text-fill: #3A3F47;"/>
-                    <Label text="4. Wait for the doctor to accept your consultation" style="-fx-font-size: 14; -fx-text-fill: #3A3F47;"/>
+                    <Label fx:id="messageLabel" styleClass="error-label" wrapText="true"/>
+                    <Label fx:id="queueHint" text="" style="-fx-font-size: 12; -fx-text-fill: #9A9EA5; -fx-alignment: center;" alignment="CENTER" visible="false" managed="false"/>
                 </VBox>
             </VBox>
         </ScrollPane>

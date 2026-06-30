@@ -36,7 +36,7 @@
         <!-- Doctor header bar -->
         <HBox style="-fx-background-color: white; -fx-padding: 16 26; -fx-border-color: #E8E4DC; -fx-border-width: 0 0 1 0;" alignment="CENTER_LEFT" spacing="13">
             <Label fx:id="doctorChatAvatar" style="-fx-background-color: #DDF0EB; -fx-text-fill: #127566; -fx-background-radius: 12; -fx-pref-width: 44; -fx-pref-height: 44; -fx-alignment: center; -fx-font-weight: bold; -fx-font-size: 15;"/>
-            <VBox>
+            <VBox HBox.hgrow="ALWAYS">
                 <Label fx:id="doctorChatName" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
                 <Label fx:id="doctorChatSpec" style="-fx-font-size: 13; -fx-text-fill: #127566; -fx-font-weight: bold;"/>
             </VBox>
@@ -56,13 +56,20 @@
                 </HBox>
             </VBox>
 
-            <!-- Prescription side panel -->
-            <VBox style="-fx-background-color: #FBFAF7; -fx-border-color: #E8E4DC; -fx-border-width: 0 0 0 1; -fx-padding: 22; -fx-pref-width: 300; -fx-min-width: 300;" spacing="14">
-                <Label text="PRESCRIPTION" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
-                <VBox fx:id="rxPanel" spacing="10">
-                    <Label text="No prescription yet. Your doctor will issue one here after the consultation." style="-fx-font-size: 13; -fx-text-fill: #9A9EA5; -fx-wrap-text: true;"/>
+            <!-- Right side panel -->
+            <ScrollPane fitToWidth="true" style="-fx-background-color: #FBFAF7; -fx-border-color: #E8E4DC; -fx-border-width: 0 0 0 1; -fx-pref-width: 330; -fx-min-width: 330;">
+                <VBox style="-fx-padding: 22;" spacing="14">
+                    <Label text="PRESCRIPTION" style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
+                    <VBox fx:id="rxPanel" spacing="10">
+                        <Label text="No prescription yet. Your doctor will issue one here after the consultation." style="-fx-font-size: 13; -fx-text-fill: #9A9EA5; -fx-wrap-text: true;"/>
+                    </VBox>
+                    <Label text="YOUR DETAILS" style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #8A8F94; -fx-padding: 6 0 0 0;"/>
+                    <VBox fx:id="detailsPanel" style="-fx-background-color: white; -fx-border-color: #E8E4DC; -fx-border-radius: 13; -fx-background-radius: 13; -fx-padding: 14 16;" spacing="2">
+                        <Label fx:id="detailsName" style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #3A3F47;"/>
+                        <Label fx:id="detailsInfo" style="-fx-font-size: 13; -fx-text-fill: #9A9EA5;"/>
+                    </VBox>
                 </VBox>
-            </VBox>
+            </ScrollPane>
         </HBox>
     </VBox>
 </HBox>
