@@ -6,6 +6,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -311,6 +312,17 @@ public class DoctorChatController {
 
         DoctorDAO doctorDAO = new DoctorDAO();
         doctorDAO.updateStatus(doctor.getId(), "on_hold");
+
+        // re-queue pending patients to another available doctor
+        PatientDAO patientDAO = new PatientDAO();
+        List<Patient> pending = patientDAO.getPendingForDoctor(doctor.getId());
+        for (Patient p : pending) {
+            Doctor other = doctorDAO.findAvailableBySpecialty(doctor.getSpecialty());
+            if (other != null && other.getId() != doctor.getId()) {
+                patientDAO.assignDoctor(p.getId(), other.getId());
+            }
+        }
+
         doctor = doctorDAO.getById(doctor.getId());
         SessionManager.loginAsDoctor(doctor);
 
@@ -329,6 +341,39 @@ public class DoctorChatController {
         lastMessageCount = 0;
         loadMessages();
         loadTransferStatus();
+    }
+
+    @FXML
+    private void onViewFile() {
+        if (patient == null) return;
+
+        StringBuilder info = new StringBuilder();
+        info.append("Name: ").append(patient.getName()).append("\n");
+        info.append("Email: ").append(patient.getEmail()).append("\n");
+        info.append("Status: ").append(patient.getStatus() != null ? patient.getStatus() : "—").append("\n");
+        info.append("Illness: ").append(patient.getIllnessClass() != null ? patient.getIllnessClass() : "—").append("\n\n");
+        info.append("Symptoms:\n").append(patient.getSymptoms() != null ? patient.getSymptoms() : "None recorded").append("\n\n");
+
+        // prescriptions
+        PrescriptionDAO rxDAO = new PrescriptionDAO();
+        Prescription rx = rxDAO.getByPatientId(patient.getId());
+        if (rx != null) {
+            info.append("Prescription:\n");
+            info.append("  Medicine: ").append(rx.getMedicine()).append("\n");
+            info.append("  Dosage: ").append(rx.getDosage()).append("\n");
+            if (rx.getNotes() != null && !rx.getNotes().isEmpty()) {
+                info.append("  Notes: ").append(rx.getNotes()).append("\n");
+            }
+        } else {
+            info.append("Prescription: None yet\n");
+        }
+
+        Alert dialog = new Alert(Alert.AlertType.INFORMATION);
+        dialog.setTitle("Patient File");
+        dialog.setHeaderText(patient.getName() + " — Medical Record");
+        dialog.setContentText(info.toString());
+        dialog.getDialogPane().setMinWidth(450);
+        dialog.showAndWait();
     }
 
     @FXML

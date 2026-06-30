@@ -67,6 +67,8 @@
                             <Label fx:id="symptomText" style="-fx-font-size: 14; -fx-text-fill: #3A3F47; -fx-wrap-text: true;" wrapText="true"/>
                             <Label fx:id="classChipLabel" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #1F4D8F; -fx-background-color: #EEF4FC; -fx-background-radius: 20; -fx-padding: 4 10;"/>
                         </VBox>
+                        <Button text="View patient file" onAction="#onViewFile" maxWidth="Infinity"
+                                style="-fx-background-color: #EDEAE2; -fx-text-fill: #4A4F57; -fx-font-size: 12; -fx-font-weight: bold; -fx-padding: 8 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: transparent;"/>
                     </VBox>
 
                     <!-- Clinical decision -->

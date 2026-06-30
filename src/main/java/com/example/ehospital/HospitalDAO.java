@@ -95,6 +95,19 @@ public class HospitalDAO {
         return null;
     }
 
+    public void incrementBed(int hospitalId) {
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            String sql = "UPDATE hospitals SET available_beds = available_beds + 1 WHERE id = ? AND available_beds < total_beds";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, hospitalId);
+            stmt.executeUpdate();
+            conn.close();
+        } catch (Exception e) {
+            System.out.println("Error incrementing bed: " + e.getMessage());
+        }
+    }
+
     public void decrementBed(int hospitalId) {
         try {
             Connection conn = DatabaseConnection.getConnection();

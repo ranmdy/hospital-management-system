@@ -197,6 +197,17 @@ public class DoctorDashboardController {
         Doctor doctor = SessionManager.getDoctor();
         DoctorDAO dao = new DoctorDAO();
         dao.updateStatus(doctor.getId(), "on_hold");
+
+        // re-queue pending patients to another available doctor of the same specialty
+        PatientDAO patientDAO = new PatientDAO();
+        List<Patient> pending = patientDAO.getPendingForDoctor(doctor.getId());
+        for (Patient p : pending) {
+            Doctor other = dao.findAvailableBySpecialty(doctor.getSpecialty());
+            if (other != null && other.getId() != doctor.getId()) {
+                patientDAO.assignDoctor(p.getId(), other.getId());
+            }
+        }
+
         doctor = dao.getById(doctor.getId());
         SessionManager.loginAsDoctor(doctor);
         initialize();

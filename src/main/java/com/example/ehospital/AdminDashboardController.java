@@ -37,6 +37,7 @@ public class AdminDashboardController {
     @FXML private HBox actionButtons;
     @FXML private HBox resultBox;
     @FXML private Label resultLabel;
+    @FXML private Button arrivedBtn;
 
     private Hospital hospital;
     private Transfer selectedTransfer;
@@ -222,6 +223,8 @@ public class AdminDashboardController {
                 resultLabel.setText("\u2713 Accepted \u00B7 bed reserved");
                 resultLabel.setStyle("-fx-font-size: 13; -fx-text-fill: #1F6E4F; -fx-font-weight: bold;");
                 resultBox.setStyle("-fx-background-color: #EAF5EE; -fx-border-color: #BFE0CE; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 14 16;");
+                arrivedBtn.setVisible(true);
+                arrivedBtn.setManaged(true);
             } else if ("declined".equals(status)) {
                 resultBox.setVisible(true);
                 resultBox.setManaged(true);
@@ -229,12 +232,16 @@ public class AdminDashboardController {
                 resultLabel.setText("Declined" + reason);
                 resultLabel.setStyle("-fx-font-size: 13; -fx-text-fill: #9A4A36; -fx-font-weight: bold;");
                 resultBox.setStyle("-fx-background-color: #FBEEE9; -fx-border-color: #F0D9D0; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 14 16;");
+                arrivedBtn.setVisible(false);
+                arrivedBtn.setManaged(false);
             } else if ("arrived".equals(status)) {
                 resultBox.setVisible(true);
                 resultBox.setManaged(true);
                 resultLabel.setText("\u2713 Patient transferred & arrived");
                 resultLabel.setStyle("-fx-font-size: 13; -fx-text-fill: #4B3FA6; -fx-font-weight: bold;");
                 resultBox.setStyle("-fx-background-color: #E9E7F7; -fx-border-color: #D2CCEC; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 14 16;");
+                arrivedBtn.setVisible(false);
+                arrivedBtn.setManaged(false);
             }
         }
     }
@@ -278,6 +285,16 @@ public class AdminDashboardController {
             selectTransfer(selectedTransfer);
             loadTransfers();
         }
+    }
+
+    @FXML
+    private void onMarkArrived() {
+        if (selectedTransfer == null) return;
+        TransferDAO dao = new TransferDAO();
+        dao.updateStatus(selectedTransfer.getId(), "arrived");
+        selectedTransfer = dao.getById(selectedTransfer.getId());
+        selectTransfer(selectedTransfer);
+        loadTransfers();
     }
 
     @FXML

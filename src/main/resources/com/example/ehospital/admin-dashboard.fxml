@@ -132,8 +132,11 @@
                                             style="-fx-background-color: white; -fx-text-fill: #9A4A36; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 13; -fx-background-radius: 11; -fx-cursor: hand; -fx-border-color: #E6C7BF; -fx-border-width: 1.5;"/>
                                 </HBox>
 
-                                <HBox fx:id="resultBox" visible="false" managed="false" style="-fx-background-color: #EAF5EE; -fx-border-color: #BFE0CE; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 14 16;">
+                                <HBox fx:id="resultBox" visible="false" managed="false" spacing="10" alignment="CENTER_LEFT" style="-fx-background-color: #EAF5EE; -fx-border-color: #BFE0CE; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 14 16;">
                                     <Label fx:id="resultLabel" style="-fx-font-size: 13; -fx-text-fill: #1F6E4F; -fx-font-weight: bold;"/>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <Button fx:id="arrivedBtn" text="Mark as arrived" onAction="#onMarkArrived" visible="false" managed="false"
+                                            style="-fx-background-color: #4B3FA6; -fx-text-fill: white; -fx-font-size: 12; -fx-font-weight: bold; -fx-padding: 8 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: transparent;"/>
                                 </HBox>
                             </VBox>
                         </VBox>

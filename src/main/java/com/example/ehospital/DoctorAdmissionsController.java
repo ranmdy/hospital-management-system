@@ -167,7 +167,11 @@ public class DoctorAdmissionsController {
             warnDesc.setStyle("-fx-font-size: 14; -fx-text-fill: #8A6A60;");
             warnDesc.setWrapText(true);
 
-            warningBox.getChildren().addAll(warnTitle, warnDesc);
+            Button prescribeBtn = new Button("Prescribe instead \u2192");
+            prescribeBtn.setStyle("-fx-background-color: #1F4D8F; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-padding: 10 20; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: transparent;");
+            prescribeBtn.setOnAction(e -> loadScreen("doctor-chat.fxml"));
+
+            warningBox.getChildren().addAll(warnTitle, warnDesc, prescribeBtn);
             admitContent.getChildren().add(warningBox);
         }
     }
