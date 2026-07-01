@@ -165,6 +165,25 @@ public class PatientDAO {
         return null;
     }
 
+    public Patient getActiveForDoctor(int doctorId) {
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            String sql = "SELECT * FROM patients WHERE assigned_doctor_id = ? AND status IN ('in_consult', 'prescribed') ORDER BY FIELD(status, 'in_consult', 'prescribed') LIMIT 1";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, doctorId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Patient p = buildPatient(rs);
+                conn.close();
+                return p;
+            }
+            conn.close();
+        } catch (Exception e) {
+            System.out.println("Get active patient failed: " + e.getMessage());
+        }
+        return null;
+    }
+
     public List<Patient> getAdmittedForDoctor(int doctorId) {
         List<Patient> list = new ArrayList<>();
         try {

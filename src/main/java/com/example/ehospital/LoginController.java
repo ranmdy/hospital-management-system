@@ -53,6 +53,12 @@ public class LoginController {
             return;
         }
 
+        if (!email.contains("@") || !email.contains(".") || email.indexOf("@") > email.lastIndexOf(".")) {
+            messageLabel.getStyleClass().setAll("error-label");
+            messageLabel.setText("Please enter a valid email address.");
+            return;
+        }
+
         if (selectedRole.equals("patient")) {
             PatientDAO dao = new PatientDAO();
             Patient patient = dao.login(email, password);

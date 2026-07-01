@@ -84,6 +84,13 @@ public class DoctorChatController {
             // symptom summary
             symptomText.setText(patient.getSymptoms() != null ? patient.getSymptoms() : "No symptoms recorded");
             classChipLabel.setText(patient.getIllnessClass() != null ? patient.getIllnessClass() : "—");
+
+            // check if already prescribed (doctor logged out and back in)
+            PrescriptionDAO rxDAO = new PrescriptionDAO();
+            if (rxDAO.getByPatientId(patient.getId()) != null) {
+                prescribeBtn.setDisable(true);
+                prescribeBtn.setText("Prescribed");
+            }
         } else {
             patientChatName.setText("No patient");
             patientChatInfo.setText("No patient currently in consultation");
@@ -225,10 +232,6 @@ public class DoctorChatController {
         boolean saved = rxDAO.save(patient.getId(), doctor.getId(), medicine, dosage, notes);
 
         if (saved) {
-            // update patient status to prescribed
-            PatientDAO patientDAO = new PatientDAO();
-            patientDAO.updateStatus(patient.getId(), "prescribed");
-
             // send a system message in chat
             chatDAO.sendMessage(doctor.getId(), patient.getId(), "doctor",
                     "Prescription issued: " + medicine + " — " + dosage);
@@ -236,17 +239,11 @@ public class DoctorChatController {
             rxMessage.setText("Prescription issued successfully!");
             rxMessage.setStyle("-fx-text-fill: #127566; -fx-font-size: 13;");
 
-            // hide form, show after-consult options
+            // hide form but keep chat active — consultation continues
             rxForm.setVisible(false);
             rxForm.setManaged(false);
             prescribeBtn.setDisable(true);
             prescribeBtn.setText("Prescribed");
-
-            patientStatusPill.setText("Prescribed");
-            patientStatusPill.getStyleClass().setAll("status-available");
-
-            afterConsult.setVisible(true);
-            afterConsult.setManaged(true);
 
             lastMessageCount = 0;
             loadMessages();
@@ -280,6 +277,12 @@ public class DoctorChatController {
     @FXML
     private void onNextPatient() {
         stopPolling();
+
+        // discharge current patient if still in consult
+        if (patient != null && "in_consult".equals(patient.getStatus())) {
+            PatientDAO pDao = new PatientDAO();
+            pDao.updateStatus(patient.getId(), "discharged");
+        }
 
         DoctorDAO doctorDAO = new DoctorDAO();
         doctorDAO.updateStatus(doctor.getId(), "available");

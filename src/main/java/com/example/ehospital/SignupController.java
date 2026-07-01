@@ -94,6 +94,12 @@ public class SignupController {
             return;
         }
 
+        if (!email.contains("@") || !email.contains(".") || email.indexOf("@") > email.lastIndexOf(".")) {
+            messageLabel.setText("Please enter a valid email address.");
+            messageLabel.getStyleClass().setAll("error-label");
+            return;
+        }
+
         boolean success = false;
 
         if (selectedRole.equals("patient")) {
