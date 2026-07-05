@@ -3,22 +3,20 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.example.ehospital.DoctorAdmissionsController"
+<HBox prefHeight="900" prefWidth="1500" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.ehospital.AdminAdmissionsController"
       stylesheets="@styles.css">
 
     <!-- SIDEBAR -->
     <VBox styleClass="sidebar" spacing="3">
         <HBox alignment="CENTER_LEFT" spacing="11">
             <Label text="+" styleClass="sidebar-logo"/>
-            <Label text="Ranmdy" styleClass="sidebar-brand"/>
+            <Label text="E-Healthcare Management" styleClass="sidebar-brand"/>
         </HBox>
         <Region prefHeight="20"/>
-        <Button text="Dashboard" styleClass="nav-item" maxWidth="Infinity" onAction="#goToDashboard"/>
-        <Button text="Consultation" styleClass="nav-item" maxWidth="Infinity" onAction="#goToConsultation"/>
+        <Button text="Transfer requests" styleClass="nav-item" maxWidth="Infinity" onAction="#goToTransfers"/>
+        <Button text="Patient records" styleClass="nav-item" maxWidth="Infinity" onAction="#goToRecords"/>
         <Button text="Admission" styleClass="nav-item-active" maxWidth="Infinity"/>
-        <Button text="Transfer" styleClass="nav-item" maxWidth="Infinity" onAction="#goToTransfer"/>
-        <Button text="Prescription" styleClass="nav-item" maxWidth="Infinity" onAction="#goToPrescription"/>
         <Region VBox.vgrow="ALWAYS"/>
         <VBox styleClass="sidebar-divider" spacing="8">
             <HBox alignment="CENTER_LEFT" spacing="11">

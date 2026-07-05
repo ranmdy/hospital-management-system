@@ -9,6 +9,7 @@ public class Patient {
     private String illnessClass;
     private String status;
     private int assignedDoctorId;
+    private String bedId;
 
     public Patient() {}
 
@@ -41,4 +42,7 @@ public class Patient {
 
     public int getAssignedDoctorId() { return assignedDoctorId; }
     public void setAssignedDoctorId(int assignedDoctorId) { this.assignedDoctorId = assignedDoctorId; }
+
+    public String getBedId() { return bedId; }
+    public void setBedId(String bedId) { this.bedId = bedId; }
 }

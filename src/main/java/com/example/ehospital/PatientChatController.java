@@ -242,7 +242,7 @@ public class PatientChatController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Stage stage = (Stage) chatBox.getScene().getWindow();
-            stage.setScene(new Scene(loader.load(), 900, 600));
+            stage.setScene(new Scene(loader.load(), 1500, 900));
         } catch (Exception e) {
             System.out.println("Could not load screen: " + e.getMessage());
         }

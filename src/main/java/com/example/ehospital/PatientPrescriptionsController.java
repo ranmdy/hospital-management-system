@@ -72,7 +72,7 @@ public class PatientPrescriptionsController {
             VBox headerInfo = new VBox(2);
             Label headerTitle = new Label("Prescription");
             headerTitle.setStyle("-fx-font-size: 16; -fx-font-weight: bold; -fx-text-fill: white;");
-            Label headerSub = new Label("Ranmdy Healthcare Center");
+            Label headerSub = new Label("E-Healthcare Management");
             headerSub.setStyle("-fx-font-size: 13; -fx-text-fill: #A9BBD6;");
             headerInfo.getChildren().addAll(headerTitle, headerSub);
 
@@ -190,7 +190,7 @@ public class PatientPrescriptionsController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Stage stage = (Stage) rxList.getScene().getWindow();
-            stage.setScene(new Scene(loader.load(), 900, 600));
+            stage.setScene(new Scene(loader.load(), 1500, 900));
         } catch (Exception e) {
             System.out.println("Could not load screen: " + e.getMessage());
         }

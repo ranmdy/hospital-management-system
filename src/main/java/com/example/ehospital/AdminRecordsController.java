@@ -232,6 +232,11 @@ public class AdminRecordsController {
     private void onRefresh() { initialize(); }
 
     @FXML
+    private void goToAdmission() {
+        loadScreen("admin-admissions.fxml");
+    }
+
+    @FXML
     private void onLogout() {
         SessionManager.logout();
         loadScreen("login-view.fxml");
@@ -241,7 +246,7 @@ public class AdminRecordsController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Stage stage = (Stage) avatarLabel.getScene().getWindow();
-            stage.setScene(new Scene(loader.load(), 900, 600));
+            stage.setScene(new Scene(loader.load(), 1500, 900));
         } catch (Exception e) {
             System.out.println("Could not load screen: " + e.getMessage());
         }

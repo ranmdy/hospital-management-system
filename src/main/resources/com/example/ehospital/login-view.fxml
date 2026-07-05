@@ -6,13 +6,13 @@
 
 <HBox xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.ehospital.LoginController"
-      stylesheets="@styles.css" prefWidth="900" prefHeight="600">
+      stylesheets="@styles.css" prefHeight="900" prefWidth="1500">
 
     <!-- LEFT: Navy branding panel -->
     <VBox styleClass="auth-left" HBox.hgrow="ALWAYS" maxWidth="420" minWidth="380">
         <HBox alignment="CENTER_LEFT" spacing="11">
             <Label text="+" styleClass="sidebar-logo"/>
-            <Label text="Ranmdy" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            <Label text="E-Healthcare Management" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;"/>
         </HBox>
 
         <Region VBox.vgrow="ALWAYS"/>
@@ -39,7 +39,7 @@
 
         <Region VBox.vgrow="ALWAYS"/>
 
-        <Label text="Ranmdy Healthcare Center · NDPR-compliant" styleClass="auth-footer"/>
+        <Label text="E-Healthcare Management Center · NDPR-compliant" styleClass="auth-footer"/>
     </VBox>
 
     <!-- RIGHT: Login form -->
@@ -51,7 +51,7 @@
             </Label>
 
             <!-- Segment toggle -->
-            <HBox styleClass="segment-bar">
+            <HBox styleClass="segment-bar" alignment="CENTER">
                 <Button text="Log in" styleClass="segment-btn-active" disable="true"/>
                 <Button text="Register" styleClass="segment-btn" onAction="#goToSignup"/>
             </HBox>

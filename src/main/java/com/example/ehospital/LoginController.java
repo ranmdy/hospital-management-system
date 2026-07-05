@@ -44,7 +44,7 @@ public class LoginController {
 
     @FXML
     private void onLogin() {
-        String email = emailField.getText();
+        String email = emailField.getText().trim();
         String password = passwordField.getText();
 
         if (email.isEmpty() || password.isEmpty()) {
@@ -53,7 +53,15 @@ public class LoginController {
             return;
         }
 
-        if (!email.contains("@") || !email.contains(".") || email.indexOf("@") > email.lastIndexOf(".")) {
+        // Integrated validation: Check for uppercase characters
+        if (containsUppercase(email)) {
+            messageLabel.getStyleClass().setAll("error-label");
+            messageLabel.setText("Email addresses must be inputted strictly using lowercase characters.");
+            return;
+        }
+
+        // Integrated validation: Enforce strict RFC-like email parsing structure
+        if (!isStrictlyValidEmail(email)) {
             messageLabel.getStyleClass().setAll("error-label");
             messageLabel.setText("Please enter a valid email address.");
             return;
@@ -101,9 +109,61 @@ public class LoginController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Stage stage = (Stage) emailField.getScene().getWindow();
-            stage.setScene(new Scene(loader.load(), 900, 600));
+            stage.setScene(new Scene(loader.load(), 1500, 900));
         } catch (Exception e) {
             System.out.println("Could not load screen: " + e.getMessage());
         }
+    }
+
+    // --- Helper Email Validation Methods from RegistrationAndLoginPage ---
+
+    private boolean containsUppercase(String email) {
+        if (email == null) return false;
+        for (char c : email.toCharArray()) {
+            if (Character.isUpperCase(c)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isStrictlyValidEmail(String email) {
+        if (email == null || email.isEmpty()) return false;
+        if (email.length() > 320) return false;
+
+        int atCount = 0;
+        for (char c : email.toCharArray()) {
+            if (c == '@') atCount++;
+        }
+        if (atCount != 1) return false;
+
+        String[] parts = email.split("@");
+        if (parts.length != 2) return false;
+
+        String localPart = parts[0];
+        String domain = parts[1];
+
+        if (localPart.length() < 1 || localPart.length() > 64) return false;
+        if (domain.length() < 3 || domain.length() > 255) return false;
+        if (localPart.startsWith(".") || localPart.endsWith(".") || localPart.contains("..")) return false;
+
+        if (!localPart.matches("^[a-z0-9!#$%&'*+\\-/=?^_`{|}~.]+$")) return false;
+        if (domain.startsWith(".") || domain.endsWith(".") || domain.contains("..")) return false;
+
+        String[] labels = domain.split("\\.");
+        if (labels.length < 2) return false;
+
+        for (int i = 0; i < labels.length - 1; i++) {
+            String label = labels[i];
+            if (label.length() < 1 || label.length() > 63) return false;
+            if (label.startsWith("-") || label.endsWith("-")) return false;
+            if (!label.matches("^[a-z0-9-]+$")) return false;
+        }
+
+        String tld = labels[labels.length - 1];
+        if (tld.length() < 2 || tld.length() > 63) return false;
+        if (!tld.matches("^[a-z]+$")) return false;
+
+        return true;
     }
 }

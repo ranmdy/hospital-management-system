@@ -121,9 +121,6 @@ public class DoctorPrescriptionsController {
     private void goToConsultation() { loadScreen("doctor-chat.fxml"); }
 
     @FXML
-    private void goToAdmission() { loadScreen("doctor-admissions.fxml"); }
-
-    @FXML
     private void goToTransfer() { loadScreen("doctor-transfer.fxml"); }
 
     @FXML
@@ -136,7 +133,7 @@ public class DoctorPrescriptionsController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Stage stage = (Stage) rxList.getScene().getWindow();
-            stage.setScene(new Scene(loader.load(), 900, 600));
+            stage.setScene(new Scene(loader.load(), 1500, 900));
         } catch (Exception e) {
             System.out.println("Could not load screen: " + e.getMessage());
         }

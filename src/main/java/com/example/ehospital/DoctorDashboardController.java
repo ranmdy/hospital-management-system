@@ -241,11 +241,6 @@ public class DoctorDashboardController {
     }
 
     @FXML
-    private void goToAdmission() {
-        loadScreen("doctor-admissions.fxml");
-    }
-
-    @FXML
     private void goToPrescription() {
         loadScreen("doctor-prescriptions.fxml");
     }
@@ -265,7 +260,7 @@ public class DoctorDashboardController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Stage stage = (Stage) queueList.getScene().getWindow();
-            stage.setScene(new Scene(loader.load(), 900, 600));
+            stage.setScene(new Scene(loader.load(), 1500, 900));
         } catch (Exception e) {
             System.out.println("Could not load screen: " + e.getMessage());
         }

@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox xmlns:fx="http://javafx.com/fxml"
+<HBox prefHeight="900" prefWidth="1500" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.ehospital.DoctorChatController"
       stylesheets="@styles.css">
 
@@ -11,12 +11,11 @@
     <VBox styleClass="sidebar" spacing="3">
         <HBox alignment="CENTER_LEFT" spacing="11">
             <Label text="+" styleClass="sidebar-logo"/>
-            <Label text="Ranmdy" styleClass="sidebar-brand"/>
+            <Label text="E-Healthcare Management" styleClass="sidebar-brand"/>
         </HBox>
         <Region prefHeight="20"/>
         <Button text="Dashboard" styleClass="nav-item" maxWidth="Infinity" onAction="#goToDashboard"/>
         <Button text="Consultation" styleClass="nav-item-active" maxWidth="Infinity"/>
-        <Button text="Admission" styleClass="nav-item" maxWidth="Infinity" onAction="#goToAdmission"/>
         <Button text="Transfer" styleClass="nav-item" maxWidth="Infinity" onAction="#onTransfer"/>
         <Button text="Prescription" styleClass="nav-item" maxWidth="Infinity" onAction="#goToPrescription"/>
         <Region VBox.vgrow="ALWAYS"/>
@@ -54,6 +53,7 @@
                 <HBox style="-fx-background-color: white; -fx-padding: 14 26; -fx-border-color: #E8E4DC; -fx-border-width: 1 0 0 0;" spacing="11" alignment="CENTER_LEFT">
                     <TextField fx:id="messageField" promptText="Message your patient..." styleClass="text-input" HBox.hgrow="ALWAYS" onAction="#onSend"/>
                     <Button text="Send" styleClass="btn-primary" onAction="#onSend"/>
+                    <Button fx:id="endChatBtn" text="End Chat" onAction="#onEndChat" style="-fx-background-color: #8B0000;-fx-text-fill: white;-fx-font-size: 15;-fx-font-weight: bold;-fx-padding: 13 20 13 20;-fx-background-radius: 11;-fx-cursor: hand;-fx-border-color: transparent;"/>
                 </HBox>
             </VBox>
 
@@ -78,9 +78,6 @@
                         <Button fx:id="prescribeBtn" onAction="#onPrescribe" maxWidth="Infinity"
                                 style="-fx-background-color: #1F4D8F; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 14; -fx-background-radius: 12; -fx-cursor: hand; -fx-border-color: transparent; -fx-alignment: center-left;"
                                 text="Prescribe drugs"/>
-                        <Button onAction="#onAdmit" maxWidth="Infinity"
-                                style="-fx-background-color: white; -fx-text-fill: #B14A33; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 14; -fx-background-radius: 12; -fx-cursor: hand; -fx-border-color: #EBC6BB; -fx-alignment: center-left;"
-                                text="Admit to hospital"/>
                         <Button maxWidth="Infinity" onAction="#onTransfer"
                                 style="-fx-background-color: white; -fx-text-fill: #4B3FA6; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 14; -fx-background-radius: 12; -fx-cursor: hand; -fx-border-color: #D2CCEC; -fx-alignment: center-left;"
                                 text="Transfer to hospital"/>

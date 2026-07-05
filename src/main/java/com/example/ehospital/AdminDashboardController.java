@@ -249,20 +249,11 @@ public class AdminDashboardController {
     @FXML
     private void onAccept() {
         if (selectedTransfer == null) return;
+
         TransferDAO dao = new TransferDAO();
         dao.updateStatus(selectedTransfer.getId(), "accepted");
 
-        // decrement available beds
-        if (hospital != null) {
-            HospitalDAO hospitalDAO = new HospitalDAO();
-            hospitalDAO.decrementBed(hospital.getId());
-            hospital = hospitalDAO.getByAdminId(SessionManager.getAdmin().getId());
-        }
-
-        // mark patient as admitted
-        PatientDAO patientDAO = new PatientDAO();
-        patientDAO.updateStatus(selectedTransfer.getPatientId(), "admitted");
-
+        // Bed reservation and patient status changes now happen in the Admission view.
         selectedTransfer = dao.getById(selectedTransfer.getId());
         selectTransfer(selectedTransfer);
         initialize(); // refresh stats + list
@@ -276,6 +267,49 @@ public class AdminDashboardController {
         dialog.setTitle("Decline Transfer");
         dialog.setHeaderText("Reason for declining this transfer:");
         dialog.setContentText("Reason:");
+
+        // Modern UI Styling Injection
+        DialogPane dialogPane = dialog.getDialogPane();
+        dialogPane.setStyle(
+                "-fx-background-color: #FFFFFF; " +
+                        "-fx-padding: 20px; " +
+                        "-fx-font-family: 'Segoe UI', Helvetica, Arial, sans-serif;"
+        );
+
+        // Header Text Styling
+        dialogPane.lookup(".header-panel").setStyle("-fx-background-color: #FFFFFF; -fx-padding: 0 0 10 0;");
+        Label headerLabel = (Label) dialogPane.lookup(".header-panel .label");
+        if (headerLabel != null) {
+            headerLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1A1C1E;");
+        }
+
+        // Input Content Styling
+        Label contentLabel = (Label) dialogPane.lookup(".content.label");
+        if (contentLabel != null) {
+            contentLabel.setStyle("-fx-text-fill: #6B6F76; -fx-font-size: 13px;");
+        }
+
+        TextField editor = dialog.getEditor();
+        editor.setStyle(
+                "-fx-background-color: #F4F1EC; " +
+                        "-fx-background-radius: 8px; " +
+                        "-fx-border-color: #E8E4DC; " +
+                        "-fx-border-radius: 8px; " +
+                        "-fx-padding: 10px; " +
+                        "-fx-font-size: 14px;"
+        );
+
+        // Custom Buttons Styling
+        Button okButton = (Button) dialogPane.lookupButton(ButtonType.OK);
+        Button cancelButton = (Button) dialogPane.lookupButton(ButtonType.CANCEL);
+
+        if (okButton != null) {
+            okButton.setStyle("-fx-background-color: #9A4A36; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8px; -fx-padding: 8px 16px; -fx-cursor: hand;");
+        }
+        if (cancelButton != null) {
+            cancelButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #6B6F76; -fx-border-color: #E8E4DC; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-padding: 8px 16px; -fx-cursor: hand;");
+        }
+
         Optional<String> result = dialog.showAndWait();
 
         if (result.isPresent() && !result.get().trim().isEmpty()) {
@@ -315,6 +349,10 @@ public class AdminDashboardController {
     private void onRefresh() {
         initialize();
     }
+    @FXML
+    private void goToAdmission() {
+        loadScreen("admin-admissions.fxml");
+    }
 
     @FXML
     private void onLogout() {
@@ -352,7 +390,7 @@ public class AdminDashboardController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Stage stage = (Stage) avatarLabel.getScene().getWindow();
-            stage.setScene(new Scene(loader.load(), 900, 600));
+            stage.setScene(new Scene(loader.load(), 1500, 900));
         } catch (Exception e) {
             System.out.println("Could not load screen: " + e.getMessage());
         }

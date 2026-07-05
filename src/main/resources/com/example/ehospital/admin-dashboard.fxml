@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox xmlns:fx="http://javafx.com/fxml"
+<HBox prefHeight="900" prefWidth="1500" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.ehospital.AdminDashboardController"
       stylesheets="@styles.css">
 
@@ -12,12 +12,13 @@
     <VBox styleClass="sidebar" spacing="3">
         <HBox alignment="CENTER_LEFT" spacing="11">
             <Label text="+" styleClass="sidebar-logo"/>
-            <Label text="Ranmdy" styleClass="sidebar-brand"/>
+            <Label text="E-Healthcare Management" styleClass="sidebar-brand"/>
         </HBox>
         <Region prefHeight="20"/>
 
         <Button text="Transfer requests" styleClass="nav-item-active" maxWidth="Infinity"/>
         <Button text="Patient records" styleClass="nav-item" maxWidth="Infinity" onAction="#goToRecords"/>
+        <Button text="Admission" styleClass="nav-item" maxWidth="Infinity" onAction="#goToAdmission"/>
 
         <Region VBox.vgrow="ALWAYS"/>
 
@@ -99,7 +100,7 @@
                                     </VBox>
                                     <VBox spacing="2">
                                         <Label text="FROM" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #9A9EA5;"/>
-                                        <Label text="Ranmdy Healthcare Center" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                                        <Label text="E-Healthcare Management Center" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
                                     </VBox>
                                     <VBox spacing="2">
                                         <Label text="RECEIVED" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #9A9EA5;"/>

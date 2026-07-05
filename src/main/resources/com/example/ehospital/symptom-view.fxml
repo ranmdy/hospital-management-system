@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox xmlns:fx="http://javafx.com/fxml"
+<HBox prefHeight="900" prefWidth="1500" xmlns:fx="http://javafx.com/fxml"
       fx:controller="com.example.ehospital.SymptomController"
       stylesheets="@styles.css">
 
@@ -12,7 +12,7 @@
     <VBox styleClass="sidebar" spacing="3">
         <HBox alignment="CENTER_LEFT" spacing="11">
             <Label text="+" styleClass="sidebar-logo"/>
-            <Label text="Ranmdy" styleClass="sidebar-brand"/>
+            <Label text="E-Healthcare Management" styleClass="sidebar-brand"/>
         </HBox>
         <Region prefHeight="20"/>
 

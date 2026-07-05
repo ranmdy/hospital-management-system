@@ -108,7 +108,7 @@ public class PatientDAO {
         }
     }
 
-    public List<Patient> getPendingBySpecialty(String specialty) {
+    /*public List<Patient> getPendingBySpecialty(String specialty) {
         List<Patient> list = new ArrayList<>();
         try {
             Connection conn = DatabaseConnection.getConnection();
@@ -126,7 +126,7 @@ public class PatientDAO {
             System.out.println("Get pending patients failed: " + e.getMessage());
         }
         return list;
-    }
+    }*/
 
     public List<Patient> getPendingForDoctor(int doctorId) {
         List<Patient> list = new ArrayList<>();
@@ -165,43 +165,6 @@ public class PatientDAO {
         return null;
     }
 
-    public Patient getActiveForDoctor(int doctorId) {
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            String sql = "SELECT * FROM patients WHERE assigned_doctor_id = ? AND status IN ('in_consult', 'prescribed') ORDER BY FIELD(status, 'in_consult', 'prescribed') LIMIT 1";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, doctorId);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                Patient p = buildPatient(rs);
-                conn.close();
-                return p;
-            }
-            conn.close();
-        } catch (Exception e) {
-            System.out.println("Get active patient failed: " + e.getMessage());
-        }
-        return null;
-    }
-
-    public List<Patient> getAdmittedForDoctor(int doctorId) {
-        List<Patient> list = new ArrayList<>();
-        try {
-            Connection conn = DatabaseConnection.getConnection();
-            String sql = "SELECT * FROM patients WHERE assigned_doctor_id = ? AND status = 'admitted'";
-            PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setInt(1, doctorId);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                list.add(buildPatient(rs));
-            }
-            conn.close();
-        } catch (Exception e) {
-            System.out.println("Get admitted patients failed: " + e.getMessage());
-        }
-        return list;
-    }
-
     private Patient buildPatient(ResultSet rs) throws Exception {
         Patient p = new Patient();
         p.setId(rs.getInt("id"));
@@ -213,4 +176,53 @@ public class PatientDAO {
         p.setAssignedDoctorId(rs.getInt("assigned_doctor_id"));
         return p;
     }
+
+    public void assignToBed(int patientId, String bedId) {
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            String sql = "UPDATE patients SET status = 'admitted', bed_id = ? WHERE id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, bedId);
+            stmt.setInt(2, patientId);
+            stmt.executeUpdate();
+            conn.close();
+        } catch (Exception e) {
+            System.out.println("Bed assignment failed: " + e.getMessage());
+        }
+    }
+
+    public void dischargeFromBed(int patientId) {
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            String sql = "UPDATE patients SET status = 'new', bed_id = NULL WHERE id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, patientId);
+            stmt.executeUpdate();
+            conn.close();
+        } catch (Exception e) {
+            System.out.println("Discharge failed: " + e.getMessage());
+        }
+    }
+
+    public Patient getAdmittedPatientByBed(String bedId) {
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            String sql = "SELECT * FROM patients WHERE bed_id = ? AND status = 'admitted'";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, bedId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Patient p = buildPatient(rs);
+                // Manually set bed_id since we didn't add it to buildPatient()
+                p.setBedId(rs.getString("bed_id"));
+                conn.close();
+                return p;
+            }
+            conn.close();
+        } catch (Exception e) {
+            System.out.println("Get patient by bed failed: " + e.getMessage());
+        }
+        return null;
+    }
+
 }

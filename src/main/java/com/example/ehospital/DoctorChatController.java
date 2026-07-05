@@ -84,13 +84,6 @@ public class DoctorChatController {
             // symptom summary
             symptomText.setText(patient.getSymptoms() != null ? patient.getSymptoms() : "No symptoms recorded");
             classChipLabel.setText(patient.getIllnessClass() != null ? patient.getIllnessClass() : "—");
-
-            // check if already prescribed (doctor logged out and back in)
-            PrescriptionDAO rxDAO = new PrescriptionDAO();
-            if (rxDAO.getByPatientId(patient.getId()) != null) {
-                prescribeBtn.setDisable(true);
-                prescribeBtn.setText("Prescribed");
-            }
         } else {
             patientChatName.setText("No patient");
             patientChatInfo.setText("No patient currently in consultation");
@@ -254,27 +247,6 @@ public class DoctorChatController {
     }
 
     @FXML
-    private void onAdmit() {
-        if (patient == null) return;
-
-        PatientDAO patientDAO = new PatientDAO();
-        patientDAO.updateStatus(patient.getId(), "admitted");
-
-        chatDAO.sendMessage(doctor.getId(), patient.getId(), "doctor",
-                "Patient has been admitted to hospital for further care.");
-
-        patientStatusPill.setText("Admitted");
-        patientStatusPill.getStyleClass().setAll("status-busy");
-
-        prescribeBtn.setDisable(true);
-        afterConsult.setVisible(true);
-        afterConsult.setManaged(true);
-
-        lastMessageCount = 0;
-        loadMessages();
-    }
-
-    @FXML
     private void onNextPatient() {
         stopPolling();
 
@@ -350,33 +322,69 @@ public class DoctorChatController {
     private void onViewFile() {
         if (patient == null) return;
 
+        // 1. Build the clinical data string using information from the active doctor session
         StringBuilder info = new StringBuilder();
         info.append("Name: ").append(patient.getName()).append("\n");
         info.append("Email: ").append(patient.getEmail()).append("\n");
         info.append("Status: ").append(patient.getStatus() != null ? patient.getStatus() : "—").append("\n");
-        info.append("Illness: ").append(patient.getIllnessClass() != null ? patient.getIllnessClass() : "—").append("\n\n");
-        info.append("Symptoms:\n").append(patient.getSymptoms() != null ? patient.getSymptoms() : "None recorded").append("\n\n");
+        info.append("Illness Class: ").append(patient.getIllnessClass() != null ? patient.getIllnessClass() : "—").append("\n\n");
+        info.append("Symptoms Summary:\n").append(patient.getSymptoms() != null ? patient.getSymptoms() : "None recorded").append("\n\n");
 
-        // prescriptions
         PrescriptionDAO rxDAO = new PrescriptionDAO();
         Prescription rx = rxDAO.getByPatientId(patient.getId());
         if (rx != null) {
             info.append("Prescription:\n");
-            info.append("  Medicine: ").append(rx.getMedicine()).append("\n");
-            info.append("  Dosage: ").append(rx.getDosage()).append("\n");
+            info.append("  • Medicine: ").append(rx.getMedicine()).append("\n");
+            info.append("  • Dosage: ").append(rx.getDosage()).append("\n");
             if (rx.getNotes() != null && !rx.getNotes().isEmpty()) {
-                info.append("  Notes: ").append(rx.getNotes()).append("\n");
+                info.append("  • Notes: ").append(rx.getNotes()).append("\n");
             }
         } else {
-            info.append("Prescription: None yet\n");
+            info.append("Active Prescription: No prescriptions issued yet.\n");
         }
 
-        Alert dialog = new Alert(Alert.AlertType.INFORMATION);
-        dialog.setTitle("Patient File");
-        dialog.setHeaderText(patient.getName() + " — Medical Record");
-        dialog.setContentText(info.toString());
-        dialog.getDialogPane().setMinWidth(450);
-        dialog.showAndWait();
+        // 2. Initialize the information layout dialog stage
+        Alert fileDialog = new Alert(Alert.AlertType.INFORMATION);
+        fileDialog.setTitle("Patient Digital Health Record");
+        fileDialog.setHeaderText(patient.getName() + " — Medical Record");
+        fileDialog.setContentText(info.toString());
+
+        // 3. Inject Modern UI styling definitions into the Dialog Pane
+        javafx.scene.control.DialogPane dialogPane = fileDialog.getDialogPane();
+        dialogPane.setMinWidth(480);
+        dialogPane.setStyle(
+                "-fx-background-color: #FFFFFF; " +
+                        "-fx-padding: 24px; " +
+                        "-fx-font-family: 'Segoe UI', Helvetica, Arial, sans-serif;"
+        );
+
+        dialogPane.lookup(".header-panel").setStyle("-fx-background-color: #FFFFFF; -fx-padding: 0 0 12 0;");
+        Label headerLabel = (Label) dialogPane.lookup(".header-panel .label");
+        if (headerLabel != null) {
+            headerLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #4B3FA6;"); // Soft primary brand color accent
+        }
+
+        Label contentLabel = (Label) dialogPane.lookup(".content.label");
+        if (contentLabel != null) {
+            contentLabel.setStyle(
+                    "-fx-background-color: #F8F9FA; " +
+                            "-fx-padding: 14px; " +
+                            "-fx-background-radius: 8px; " +
+                            "-fx-border-color: #E9ECEF; " +
+                            "-fx-border-radius: 8px; " +
+                            "-fx-text-fill: #343A40; " +
+                            "-fx-font-size: 13px; " +
+                            "-fx-line-spacing: 1.5;"
+            );
+        }
+
+        javafx.scene.control.Button closeButton = (javafx.scene.control.Button) dialogPane.lookupButton(javafx.scene.control.ButtonType.OK);
+        if (closeButton != null) {
+            closeButton.setText("Close Record");
+            closeButton.setStyle("-fx-background-color: #4B3FA6; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8px; -fx-padding: 8px 16px; -fx-cursor: hand;");
+        }
+
+        fileDialog.showAndWait();
     }
 
     @FXML
@@ -389,12 +397,6 @@ public class DoctorChatController {
     private void goToDashboard() {
         stopPolling();
         loadScreen("doctor-dashboard.fxml");
-    }
-
-    @FXML
-    private void goToAdmission() {
-        stopPolling();
-        loadScreen("doctor-admissions.fxml");
     }
 
     @FXML
@@ -423,6 +425,42 @@ public class DoctorChatController {
         }, 2000, 2000);
     }
 
+    @FXML
+    private void onEndChat() {
+        if (patient == null) return; // No active patient to end chat with
+
+        // 1. Stop background message and status polling immediately
+        stopPolling();
+
+        // 2. Check if a transfer request was sent and accepted/admitted by the hospital admin
+        TransferDAO transferDAO = new TransferDAO();
+        activeTransfer = transferDAO.getActiveByDoctorAndPatient(doctor.getId(), patient.getId());
+        if (activeTransfer == null) {
+            activeTransfer = transferDAO.getByDoctorAndPatient(doctor.getId(), patient.getId());
+        }
+
+        String nextPatientStatus = "new";
+        // From existing logic, 'accepted' indicates a bed is reserved by the hospital admin
+        if (activeTransfer != null && ("accepted".equals(activeTransfer.getStatus()) || "admitted".equals(activeTransfer.getStatus()))) {
+            nextPatientStatus = "admitted";
+        }
+
+        // 3. Update patient status in the database
+        PatientDAO patientDAO = new PatientDAO();
+        patientDAO.updateStatus(patient.getId(), nextPatientStatus);
+
+        // 4. Update doctor status back to available
+        DoctorDAO doctorDAO = new DoctorDAO();
+        doctorDAO.updateStatus(doctor.getId(), "available");
+
+        // 5. Refresh the doctor's session state
+        doctor = doctorDAO.getById(doctor.getId());
+        SessionManager.loginAsDoctor(doctor);
+
+        // 6. Navigate away from the chat screen to the dashboard
+        loadScreen("doctor-dashboard.fxml");
+    }
+
     private void stopPolling() {
         if (pollTimer != null) {
             pollTimer.cancel();
@@ -434,7 +472,7 @@ public class DoctorChatController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Stage stage = (Stage) chatBox.getScene().getWindow();
-            stage.setScene(new Scene(loader.load(), 900, 600));
+            stage.setScene(new Scene(loader.load(), 1500, 900));
         } catch (Exception e) {
             System.out.println("Could not load screen: " + e.getMessage());
         }

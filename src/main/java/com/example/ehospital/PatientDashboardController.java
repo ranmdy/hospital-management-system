@@ -107,31 +107,48 @@ public class PatientDashboardController {
             rxViewLink.setText("View \u2192");
         }
 
-        // update admission card
         if (status != null && status.equals("admitted")) {
             admitCardText.setText("You have been admitted to the hospital for further care.");
             admitCardText.setStyle("-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: #B14A33;");
-        }
-    }
 
-    @FXML
-    private void goToSymptom() {
-        loadScreen("symptom-view.fxml");
+            // Disable the consultation button
+            if (consultButton != null) {
+                consultButton.setText("Admitted - Consult Paused");
+                consultButton.setDisable(true);
+            }
+        }
     }
 
     @FXML
     private void goToConsultation() {
         Patient patient = SessionManager.getPatient();
         if (patient != null) {
-            // refresh from DB in case doctor was assigned since page loaded
             PatientDAO dao = new PatientDAO();
             patient = dao.getById(patient.getId());
             SessionManager.loginAsPatient(patient);
+
+            // Security check: Block navigation if admitted
+            if ("admitted".equals(patient.getStatus())) {
+                return;
+            }
+
             if (patient.getAssignedDoctorId() > 0) {
                 loadScreen("patient-chat.fxml");
                 return;
             }
         }
+        loadScreen("symptom-view.fxml");
+    }
+
+    @FXML
+    private void goToSymptom() {
+        Patient patient = SessionManager.getPatient();
+
+        // Security check: Block navigation if admitted
+        if (patient != null && "admitted".equals(patient.getStatus())) {
+            return;
+        }
+
         loadScreen("symptom-view.fxml");
     }
 
@@ -150,7 +167,7 @@ public class PatientDashboardController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Stage stage = (Stage) greetingLabel.getScene().getWindow();
-            stage.setScene(new Scene(loader.load(), 900, 600));
+            stage.setScene(new Scene(loader.load(), 1500, 900));
         } catch (Exception e) {
             System.out.println("Could not load screen: " + e.getMessage());
         }

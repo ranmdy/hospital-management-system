@@ -81,11 +81,11 @@ public class SymptomController {
             messageLabel.setText("Matched with Dr. " + doctor.getName() + " (" + doctor.getSpecialty() + "). Waiting for doctor to accept.");
         } else {
             // no doctor of that specialty available, try general
-            doctor = doctorDAO.findAvailableBySpecialty("General");
+            doctor = doctorDAO.findAvailableBySpecialty("General Practitioner");
             if (doctor != null) {
                 patientDAO.assignDoctor(patient.getId(), doctor.getId());
                 messageLabel.getStyleClass().setAll("success-label");
-                messageLabel.setText("No " + specialty + " available. Matched with Dr. " + doctor.getName() + " (General). Waiting for acceptance.");
+                messageLabel.setText("No " + specialty + " available. Matched with Dr. " + doctor.getName() + " (General Practitioner). Waiting for acceptance.");
             } else {
                 messageLabel.getStyleClass().setAll("error-label");
                 messageLabel.setText("No doctors available right now. Your symptoms are saved. Please check back later.");
@@ -143,7 +143,7 @@ public class SymptomController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
             Stage stage = (Stage) symptomArea.getScene().getWindow();
-            stage.setScene(new Scene(loader.load(), 900, 600));
+            stage.setScene(new Scene(loader.load(), 1500, 900));
         } catch (Exception e) {
             System.out.println("Could not load screen: " + e.getMessage());
         }
