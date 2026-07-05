@@ -194,7 +194,7 @@ public class PatientDAO {
     public void dischargeFromBed(int patientId) {
         try {
             Connection conn = DatabaseConnection.getConnection();
-            String sql = "UPDATE patients SET status = 'new', bed_id = NULL WHERE id = ?";
+            String sql = "UPDATE patients SET status = 'discharged', bed_id = NULL WHERE id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
             stmt.setInt(1, patientId);
             stmt.executeUpdate();

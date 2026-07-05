@@ -439,10 +439,13 @@ public class DoctorChatController {
             activeTransfer = transferDAO.getByDoctorAndPatient(doctor.getId(), patient.getId());
         }
 
-        String nextPatientStatus = "new";
+        String nextPatientStatus;
         // From existing logic, 'accepted' indicates a bed is reserved by the hospital admin
         if (activeTransfer != null && ("accepted".equals(activeTransfer.getStatus()) || "admitted".equals(activeTransfer.getStatus()))) {
             nextPatientStatus = "admitted";
+        } else {
+            PrescriptionDAO rxDAO = new PrescriptionDAO();
+            nextPatientStatus = rxDAO.getByPatientId(patient.getId()) != null ? "prescribed" : "discharged";
         }
 
         // 3. Update patient status in the database
