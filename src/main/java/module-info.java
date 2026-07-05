@@ -3,6 +3,8 @@ module com.example.ehospital {
     requires javafx.fxml;
     requires javafx.web;
     requires java.sql;
+    requires com.zaxxer.hikari;
+    requires org.slf4j;
 
     requires org.controlsfx.controls;
     requires com.dlsc.formsfx;
