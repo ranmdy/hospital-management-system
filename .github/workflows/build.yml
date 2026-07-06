@@ -1,0 +1,58 @@
+name: Build Java Windows Executable
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    # Step 1: Check out the repository code
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Step 2: Set up JDK 25 (Matching your project settings)
+    - name: Set up JDK 25
+      uses: actions/setup-java@v4
+      with:
+        java-version: '25'
+        distribution: 'oracle' # Matches your Oracle OpenJDK setup
+
+    # Step 3: Compile your Java files directly using standard javac
+    # This compiles all Java files inside your package structure
+    - name: Compile Java Code
+      run: |
+        mkdir -p out/production
+        javac -d out/production src/main/java/com/example/ehospital/*.java
+
+    # Step 4: Bundle the compiled classes into your e-hospital.jar
+    - name: Build Executable JAR
+      run: |
+        mkdir -p out/artifacts/e_hospital_jar
+        jar --create --file out/artifacts/e_hospital_jar/e-hospital.jar --main-class com.example.ehospital.HelloApplication -C out/production .
+
+    # Step 5: Convert that JAR into a standalone Windows .exe using jpackage
+    - name: Create EXE with jpackage
+      run: |
+        jpackage --type app-image `
+          --input out/artifacts/e_hospital_jar/ `
+          --dest output/ `
+          --name "HospitalManagementSystem" `
+          --main-jar e-hospital.jar `
+          --main-class com.example.ehospital.HelloApplication
+
+    # Step 6: Zip the final application folder
+    - name: Zip Executable Folder
+      run: |
+        Compress-Archive -Path output/HospitalManagementSystem -DestinationPath HospitalManagementSystem.zip
+
+    # Step 7: Upload the .zip containing your .exe to the Actions tab
+    - name: Upload Executable Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Windows-Executable
+        path: HospitalManagementSystem.zip
