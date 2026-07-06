@@ -15,15 +15,15 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # Step 2: Set up JDK 25 (Matching your project settings)
-    - name: Set up JDK 25
+    # Step 2: Set up JDK 25 with JavaFX included (Liberica Full)
+    - name: Set up JDK 25 with JavaFX
       uses: actions/setup-java@v4
       with:
         java-version: '25'
-        distribution: 'oracle' # Matches your Oracle OpenJDK setup
+        distribution: 'liberica'
+        java-package: 'jdk+fx' # This explicitly includes JavaFX graphics modules
 
-    # Step 3: Compile your Java files directly using standard javac
-    # This compiles all Java files inside your package structure
+    # Step 3: Compile your Java files
     - name: Compile Java Code
       run: |
         mkdir -p out/production
