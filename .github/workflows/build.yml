@@ -15,36 +15,44 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
-    # Step 2: Set up JDK 25 with JavaFX included (Liberica Full)
+    # Step 2: Set up JDK 25 with JavaFX included
     - name: Set up JDK 25 with JavaFX
       uses: actions/setup-java@v4
       with:
         java-version: '25'
         distribution: 'liberica'
         java-package: 'jdk+fx'
-        cache: 'maven' # Caches your dependencies so builds run faster next time
+        cache: 'maven'
 
-# Step 3: Tell Maven to package the project (this creates the classes/dependencies)
+    # Step 3: Compile the project using Maven
     - name: Build with Maven
       run: |
         mvn clean package -DskipTests
 
-    # Step 4: Point jpackage to your exact artifacts directory where e-hospital.jar is expected
+    # Step 4: Gather the main JAR and all external dependencies into a staging folder
+    # This automatically finds your compiled JAR and all libraries (Hikari, MySQL, etc.)
+    - name: Prepare Staging Directory
+      run: |
+        mkdir staging
+        mvn dependency:copy-dependencies -DoutputDirectory=staging
+        Get-ChildItem target/*.jar | Where-Object { $_.Name -notlike "original-*" } | Copy-Item -Destination staging/e-hospital.jar
+
+    # Step 5: Convert the staging folder into a standalone Windows .exe
     - name: Create EXE with jpackage
       run: |
         jpackage --type app-image `
-          --input out/artifacts/e_hospital_jar/ `
+          --input staging/ `
           --dest output/ `
           --name "HospitalManagementSystem" `
           --main-jar e-hospital.jar `
           --main-class com.example.ehospital.HelloApplication
 
-    # Step 5: Zip the final application folder
+    # Step 6: Zip the final application folder
     - name: Zip Executable Folder
       run: |
         Compress-Archive -Path output/HospitalManagementSystem -DestinationPath HospitalManagementSystem.zip
 
-    # Step 6: Upload the .zip containing your .exe to the Actions tab
+    # Step 7: Upload the .zip containing your .exe to the Actions tab
     - name: Upload Executable Artifact
       uses: actions/upload-artifact@v4
       with:
