@@ -21,36 +21,31 @@ jobs:
       with:
         java-version: '25'
         distribution: 'liberica'
-        java-package: 'jdk+fx' # This explicitly includes JavaFX graphics modules
+        java-package: 'jdk+fx'
+        cache: 'maven' # Caches your dependencies so builds run faster next time
 
-    # Step 3: Compile your Java files
-    - name: Compile Java Code
+    # Step 3: Let Maven build the executable JAR and download HikariCP automatically
+    - name: Build JAR with Maven
       run: |
-        mkdir -p out/production
-        javac -d out/production src/main/java/com/example/ehospital/*.java
+        mvn clean package -DskipTests
 
-    # Step 4: Bundle the compiled classes into your e-hospital.jar
-    - name: Build Executable JAR
-      run: |
-        mkdir -p out/artifacts/e_hospital_jar
-        jar --create --file out/artifacts/e_hospital_jar/e-hospital.jar --main-class com.example.ehospital.HelloApplication -C out/production .
-
-    # Step 5: Convert that JAR into a standalone Windows .exe using jpackage
+    # Step 4: Convert the Maven-generated JAR into a standalone Windows .exe
+    # Note: Maven outputs its final JAR inside the 'target' folder
     - name: Create EXE with jpackage
       run: |
         jpackage --type app-image `
-          --input out/artifacts/e_hospital_jar/ `
+          --input target/ `
           --dest output/ `
           --name "HospitalManagementSystem" `
           --main-jar e-hospital.jar `
           --main-class com.example.ehospital.HelloApplication
 
-    # Step 6: Zip the final application folder
+    # Step 5: Zip the final application folder
     - name: Zip Executable Folder
       run: |
         Compress-Archive -Path output/HospitalManagementSystem -DestinationPath HospitalManagementSystem.zip
 
-    # Step 7: Upload the .zip containing your .exe to the Actions tab
+    # Step 6: Upload the .zip containing your .exe to the Actions tab
     - name: Upload Executable Artifact
       uses: actions/upload-artifact@v4
       with:
