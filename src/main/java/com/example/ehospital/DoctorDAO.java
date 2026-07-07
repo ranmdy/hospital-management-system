@@ -94,6 +94,59 @@ public class DoctorDAO {
         return null;
     }
 
+    /**
+     * Finds a doctor by specialty who is available OR busy (not on_hold).
+     * Prefers available doctors; falls back to busy ones so patients still queue
+     * to a doctor who is already in a consultation.
+     */
+    public Doctor findBySpecialtyAny(String specialty) {
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            // prefer available first, then busy — skip on_hold
+            String sql = "SELECT * FROM doctors WHERE LOWER(specialty) = LOWER(?) " +
+                    "AND status IN ('available', 'busy') " +
+                    "ORDER BY CASE status WHEN 'available' THEN 0 ELSE 1 END LIMIT 1";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, specialty);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                Doctor d = buildDoctor(rs);
+                conn.close();
+                return d;
+            }
+            // fallback: any non-on_hold doctor regardless of specialty
+            sql = "SELECT * FROM doctors WHERE status IN ('available', 'busy') " +
+                    "ORDER BY CASE status WHEN 'available' THEN 0 ELSE 1 END LIMIT 1";
+            stmt = conn.prepareStatement(sql);
+            rs = stmt.executeQuery();
+            if (rs.next()) {
+                Doctor d = buildDoctor(rs);
+                conn.close();
+                return d;
+            }
+            conn.close();
+        } catch (Exception e) {
+            System.out.println("Find doctor failed: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public boolean existsByLicense(String licenseNumber) {
+        try {
+            Connection conn = DatabaseConnection.getConnection();
+            String sql = "SELECT id FROM doctors WHERE license_number = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, licenseNumber);
+            ResultSet rs = stmt.executeQuery();
+            boolean exists = rs.next();
+            conn.close();
+            return exists;
+        } catch (Exception e) {
+            System.out.println("License check failed: " + e.getMessage());
+            return false;
+        }
+    }
+
     public void updateStatus(int doctorId, String status) {
         try {
             Connection conn = DatabaseConnection.getConnection();

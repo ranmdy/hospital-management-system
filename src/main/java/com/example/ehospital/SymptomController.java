@@ -71,17 +71,17 @@ public class SymptomController {
         PatientDAO patientDAO = new PatientDAO();
         patientDAO.saveSymptoms(patient.getId(), symptoms, illnessClass);
 
-        // find an available doctor with the right specialty
+        // find a doctor with the right specialty — available preferred, busy accepted
         DoctorDAO doctorDAO = new DoctorDAO();
-        Doctor doctor = doctorDAO.findAvailableBySpecialty(specialty);
+        Doctor doctor = doctorDAO.findBySpecialtyAny(specialty);
 
         if (doctor != null) {
             patientDAO.assignDoctor(patient.getId(), doctor.getId());
             messageLabel.getStyleClass().setAll("success-label");
             messageLabel.setText("Matched with Dr. " + doctor.getName() + " (" + doctor.getSpecialty() + "). Waiting for doctor to accept.");
         } else {
-            // no doctor of that specialty available, try general
-            doctor = doctorDAO.findAvailableBySpecialty("General Practitioner");
+            // no doctor of that specialty — try general practitioner
+            doctor = doctorDAO.findBySpecialtyAny("General Practitioner");
             if (doctor != null) {
                 patientDAO.assignDoctor(patient.getId(), doctor.getId());
                 messageLabel.getStyleClass().setAll("success-label");

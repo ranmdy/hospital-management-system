@@ -1,5 +1,6 @@
 package com.example.ehospital;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -12,6 +13,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class DoctorDashboardController {
 
@@ -32,6 +35,8 @@ public class DoctorDashboardController {
     @FXML private Button btnBusy;
     @FXML private Button btnOnHold;
 
+    private Timer pollTimer;
+
     @FXML
     public void initialize() {
         Doctor doctor = SessionManager.getDoctor();
@@ -50,6 +55,30 @@ public class DoctorDashboardController {
         updateAvailToggle(doctor.getStatus());
         loadCurrentPatient(doctor);
         loadQueue(doctor);
+        startPolling();
+    }
+
+    private void startPolling() {
+        stopPolling();
+        pollTimer = new Timer(true);
+        pollTimer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                Platform.runLater(() -> {
+                    Doctor d = SessionManager.getDoctor();
+                    if (d == null) return;
+                    loadCurrentPatient(d);
+                    loadQueue(d);
+                });
+            }
+        }, 3000, 3000);
+    }
+
+    private void stopPolling() {
+        if (pollTimer != null) {
+            pollTimer.cancel();
+            pollTimer = null;
+        }
     }
 
     private void updateDoctorStatus(Doctor doctor) {
@@ -169,6 +198,7 @@ public class DoctorDashboardController {
 
         doctor = doctorDAO.getById(doctor.getId());
         SessionManager.loginAsDoctor(doctor);
+        stopPolling();
         loadScreen("doctor-chat.fxml");
     }
 
@@ -233,15 +263,17 @@ public class DoctorDashboardController {
     }
 
     @FXML
-    private void goToTransfer() { loadScreen("doctor-transfer.fxml"); }
+    private void goToTransfer() { stopPolling(); loadScreen("doctor-transfer.fxml"); }
 
     @FXML
     private void goToConsultation() {
+        stopPolling();
         loadScreen("doctor-chat.fxml");
     }
 
     @FXML
     private void goToPrescription() {
+        stopPolling();
         loadScreen("doctor-prescriptions.fxml");
     }
 
@@ -252,6 +284,7 @@ public class DoctorDashboardController {
 
     @FXML
     private void onLogout() {
+        stopPolling();
         SessionManager.logout();
         loadScreen("login-view.fxml");
     }

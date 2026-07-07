@@ -88,7 +88,7 @@
                         <VBox style="-fx-background-color: rgba(255,255,255,0.08); -fx-background-radius: 12; -fx-padding: 13 15;">
                             <Label fx:id="currentPatientSymptoms" style="-fx-font-size: 13; -fx-text-fill: #CFDAEC;" wrapText="true"/>
                         </VBox>
-                        <Button text="Accept &amp; consult" onAction="#goToConsultation"
+                        <Button text="Resume Consultation" onAction="#goToConsultation"
                                 style="-fx-background-color: white; -fx-text-fill: #13294C; -fx-font-size: 15; -fx-font-weight: bold; -fx-padding: 13; -fx-background-radius: 11; -fx-cursor: hand; -fx-border-color: transparent;" maxWidth="Infinity"/>
                         <HBox spacing="9">
                             <Button text="Next patient" onAction="#onNextFromDash" HBox.hgrow="ALWAYS" maxWidth="Infinity"

@@ -206,6 +206,11 @@ public class SignupController {
             }
 
             DoctorDAO dao = new DoctorDAO();
+            if (dao.existsByLicense(license)) {
+                messageLabel.setText("This license number is already registered.");
+                messageLabel.getStyleClass().setAll("error-label");
+                return;
+            }
             success = dao.register(name, email, password, selectedSpecialty, license);
 
         } else if (selectedRole.equals("admin")) {
