@@ -85,9 +85,7 @@ public class SignupController {
             specialty.getSelectionModel().selectFirst();
         }
 
-        // --- REAL-TIME LICENSE FIELD LISTENER ---
-        // Automatically updates the specialty to "Dentist" while typing, before clicking sign up
-        // And locks the specialty dropdown so the user cannot change it manually
+        // Automatically updates the specialty to "Dentist" while typing, before clicking sign up and locks the specialty dropdown so the user cannot change it manually
         licenseField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && selectedRole.equals("doctor")) {
                 String validatedCategory = determineCategoryFromLicense(newValue);
