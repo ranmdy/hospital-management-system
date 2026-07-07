@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<HBox prefHeight="900" prefWidth="1500" stylesheets="@styles.css" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/17.0.12" fx:controller="com.example.ehospital.SignupController">
+<HBox prefHeight="900" prefWidth="1500" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.ehospital.SignupController">
 
     <!-- LEFT: Navy branding panel -->
     <VBox maxWidth="420" minWidth="380" styleClass="auth-left" HBox.hgrow="ALWAYS">
@@ -41,7 +41,7 @@
     </VBox>
 
     <!-- RIGHT: Register form -->
-        <VBox alignment="CENTER" prefHeight="897.0" prefWidth="1063.0" styleClass="auth-right">
+        <VBox alignment="CENTER" prefHeight="900.0" prefWidth="1083.0" styleClass="auth-right">
             <VBox maxWidth="380" spacing="0">
                 <Label styleClass="auth-heading" text="Create account" />
                 <Label styleClass="auth-sub" text="Register to get started.">
