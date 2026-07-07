@@ -30,7 +30,6 @@ public class AdminAdmissionsController {
 
     @FXML
     public void initialize() {
-        // Clear screen to prevent duplicate items when refreshing
         admitContent.getChildren().clear();
 
         HospitalAdmin admin = SessionManager.getAdmin();
@@ -40,7 +39,6 @@ public class AdminAdmissionsController {
         userNameLabel.setText(admin.getName());
         if (specialtyLabel != null) specialtyLabel.setText("Hospital Administrator");
 
-        // Load Hospital details
         HospitalDAO hospitalDAO = new HospitalDAO();
         hospital = hospitalDAO.getByAdminId(admin.getId());
 
@@ -51,11 +49,10 @@ public class AdminAdmissionsController {
             return;
         }
 
-        // Calculate beds using existing Hospital properties
         int totalBeds = hospital.getTotalBeds();
         int freeCount = hospital.getAvailableBeds();
 
-        // 1. Dropdown Selection for incoming Transfer Requests
+        // transfer selector dropdown
         VBox selectorBox = new VBox(5);
         Label selectorLabel = new Label("Select an incoming Transfer Request to place:");
         selectorLabel.setStyle("-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #4B3FA6;");
@@ -71,7 +68,6 @@ public class AdminAdmissionsController {
 
         if (allTransfers != null) {
             for (Transfer t : allTransfers) {
-                // Keep the strict lowercase/trimmed filtering logic intact
                 String status = (t.getStatus() != null) ? t.getStatus().trim().toLowerCase() : "";
 
                 if ("accepted".equals(status) || "admitted".equals(status)) {
@@ -86,7 +82,6 @@ public class AdminAdmissionsController {
         PatientDAO patientDAO = new PatientDAO();
         DoctorDAO doctorDAO = new DoctorDAO();
 
-        // 2. Format how the dropdown text looks by querying the DAOs
         transferCombo.setConverter(new StringConverter<Transfer>() {
             @Override
             public String toString(Transfer t) {
@@ -101,25 +96,22 @@ public class AdminAdmissionsController {
             public Transfer fromString(String string) { return null; }
         });
 
-        // Set state if already selected
         if (selectedTransfer != null) {
             transferCombo.setValue(selectedTransfer);
             currentPatient = patientDAO.getById(selectedTransfer.getPatientId());
         }
 
-        // Handle dropdown selection click
         transferCombo.setOnAction(e -> {
             selectedTransfer = transferCombo.getValue();
             if (selectedTransfer != null) {
                 currentPatient = patientDAO.getById(selectedTransfer.getPatientId());
-                initialize(); // Reload the UI to reflect the selected patient
+                initialize();
             }
         });
 
         selectorBox.getChildren().addAll(selectorLabel, transferCombo);
         admitContent.getChildren().add(selectorBox);
 
-        // 3. Header title row
         VBox titleBox = new VBox(3);
         String pairingName = currentPatient != null ? currentPatient.getName() : "[Select a Patient above]";
         Label title = new Label("Pair a bed for " + pairingName);
@@ -130,7 +122,6 @@ public class AdminAdmissionsController {
         titleBox.getChildren().addAll(title, subtitle);
         admitContent.getChildren().add(titleBox);
 
-        // 4. Free beds indicator
         HBox freeIndicator = new HBox(7);
         freeIndicator.setAlignment(Pos.CENTER_LEFT);
         Label greenDot = new Label("\u25CF");
@@ -140,7 +131,6 @@ public class AdminAdmissionsController {
         freeIndicator.getChildren().addAll(greenDot, freeLabel);
         admitContent.getChildren().add(freeIndicator);
 
-        // 5. Dynamic Bed Grid
         FlowPane bedGrid = new FlowPane(13, 13);
         bedGrid.setPrefWrapLength(680);
 
@@ -151,7 +141,6 @@ public class AdminAdmissionsController {
             bedCard.setMinWidth(200);
             bedCard.setPadding(new Insets(16));
 
-            // Query the database directly to check if a patient is mapped to this specific bed ID
             Patient admittedPat = patientDAO.getAdmittedPatientByBed(bedId);
             boolean isOccupied = (admittedPat != null);
 
@@ -181,7 +170,6 @@ public class AdminAdmissionsController {
                 bedCard.setOnMouseClicked(e -> showDischargeDialog(clickedBed, admittedPat));
             }
             else {
-                // Free Bed Styling
                 bedCard.setStyle("-fx-background-color: white; -fx-border-color: #D7E3F4; -fx-border-width: 1.5; -fx-border-radius: 14; -fx-background-radius: 14; -fx-padding: 16; -fx-cursor: hand;");
                 HBox topRow = new HBox();
                 topRow.setAlignment(Pos.CENTER_LEFT);
@@ -204,7 +192,6 @@ public class AdminAdmissionsController {
         }
         admitContent.getChildren().add(bedGrid);
 
-        // 6. Context Action Bar at the bottom
         HBox pairingBar = new HBox(14);
         pairingBar.setAlignment(Pos.CENTER_LEFT);
         pairingBar.setStyle("-fx-background-color: white; -fx-border-color: #E8E4DC; -fx-border-radius: 14; -fx-background-radius: 14; -fx-padding: 16 18;");
@@ -229,7 +216,6 @@ public class AdminAdmissionsController {
         pairingBar.getChildren().addAll(pairAvatar, pairInfo, barSpacer, selectHint);
         admitContent.getChildren().add(pairingBar);
 
-        // Fallback if full
         if (freeCount == 0) {
             VBox warningBox = new VBox(10);
             warningBox.setAlignment(Pos.CENTER);
@@ -283,13 +269,11 @@ public class AdminAdmissionsController {
     private void showDischargeDialog(String bedId, Patient patient) {
         if (patient == null) return;
 
-        // 1. Initialize the Confirmation Alert
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Confirm Discharge");
         alert.setHeaderText("Discharge Patient");
         alert.setContentText("Are you sure you want to discharge " + patient.getName() + "? This action will release assigned bed assets.");
 
-        // 2. Modern UI Styling Injection
         DialogPane dialogPane = alert.getDialogPane();
         dialogPane.setStyle(
                 "-fx-background-color: #FFFFFF; " +
@@ -308,7 +292,6 @@ public class AdminAdmissionsController {
             contentLabel.setStyle("-fx-text-fill: #6B6F76; -fx-font-size: 13px; -fx-line-spacing: 1.4;");
         }
 
-        // 3. Custom Button Lookup & Styles
         Button okButton = (Button) dialogPane.lookupButton(ButtonType.OK);
         Button cancelButton = (Button) dialogPane.lookupButton(ButtonType.CANCEL);
 
@@ -320,17 +303,14 @@ public class AdminAdmissionsController {
             cancelButton.setStyle("-fx-background-color: transparent; -fx-text-fill: #6B6F76; -fx-border-color: #E8E4DC; -fx-border-radius: 8px; -fx-background-radius: 8px; -fx-padding: 8px 16px; -fx-cursor: hand;");
         }
 
-        // 4. Show dialog and execute business logic on confirmation
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             HospitalDAO hospitalDAO = new HospitalDAO();
             PatientDAO patientDAO = new PatientDAO();
 
-            // Release the facility bed asset metrics
             hospitalDAO.incrementBed(hospital.getId());
             patientDAO.dischargeFromBed(patient.getId());
 
-            // Clear and reload layout structures
             admitContent.getChildren().clear();
             initialize();
         }

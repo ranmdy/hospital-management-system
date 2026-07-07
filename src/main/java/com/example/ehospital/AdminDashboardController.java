@@ -50,7 +50,6 @@ public class AdminDashboardController {
         avatarLabel.setText(getInitials(admin.getName()));
         userNameLabel.setText(admin.getName());
 
-        // load hospital
         HospitalDAO hospitalDAO = new HospitalDAO();
         hospital = hospitalDAO.getByAdminId(admin.getId());
 
@@ -152,7 +151,6 @@ public class AdminDashboardController {
         detailPatientName.setText(pat != null ? pat.getName() : "Unknown");
         detailPatientInfo.setText(pat != null ? (pat.getIllnessClass() != null ? pat.getIllnessClass() : "") + " \u00B7 " + pat.getEmail() : "");
 
-        // urgency pill
         String urg = t.getUrgency();
         if ("emergency".equals(urg)) {
             detailUrgencyPill.setText("Emergency");
@@ -165,7 +163,6 @@ public class AdminDashboardController {
             detailUrgencyPill.setStyle("-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #6B6F76; -fx-background-color: #F0EEEA; -fx-background-radius: 6; -fx-padding: 3 8;");
         }
 
-        // status pill
         String status = t.getStatus();
         if ("new".equals(status)) {
             detailStatusPill.setText("New");
@@ -185,7 +182,6 @@ public class AdminDashboardController {
         detailDate.setText(t.getCreatedAt() != null ? t.getCreatedAt().toString().substring(0, 16) : "");
         detailReason.setText(t.getClinicalNote() != null ? t.getClinicalNote() : "No notes provided.");
 
-        // file status
         if (t.isFileSent() || t.isFileApproved()) {
             fileStatusLabel.setText("\u2713 File shared by doctor");
             fileStatusLabel.setStyle("-fx-font-size: 13; -fx-text-fill: #1F6E4F; -fx-font-weight: bold;");
@@ -208,7 +204,6 @@ public class AdminDashboardController {
             }
         }
 
-        // action buttons
         if ("new".equals(status)) {
             actionButtons.setVisible(true);
             actionButtons.setManaged(true);
@@ -253,10 +248,10 @@ public class AdminDashboardController {
         TransferDAO dao = new TransferDAO();
         dao.updateStatus(selectedTransfer.getId(), "accepted");
 
-        // Bed reservation and patient status changes now happen in the Admission view.
+        // bed assignment is handled in the admissions view
         selectedTransfer = dao.getById(selectedTransfer.getId());
         selectTransfer(selectedTransfer);
-        initialize(); // refresh stats + list
+        initialize();
     }
 
     @FXML
@@ -268,7 +263,6 @@ public class AdminDashboardController {
         dialog.setHeaderText("Reason for declining this transfer:");
         dialog.setContentText("Reason:");
 
-        // Modern UI Styling Injection
         DialogPane dialogPane = dialog.getDialogPane();
         dialogPane.setStyle(
                 "-fx-background-color: #FFFFFF; " +
@@ -276,14 +270,12 @@ public class AdminDashboardController {
                         "-fx-font-family: 'Segoe UI', Helvetica, Arial, sans-serif;"
         );
 
-        // Header Text Styling
         dialogPane.lookup(".header-panel").setStyle("-fx-background-color: #FFFFFF; -fx-padding: 0 0 10 0;");
         Label headerLabel = (Label) dialogPane.lookup(".header-panel .label");
         if (headerLabel != null) {
             headerLabel.setStyle("-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #1A1C1E;");
         }
 
-        // Input Content Styling
         Label contentLabel = (Label) dialogPane.lookup(".content.label");
         if (contentLabel != null) {
             contentLabel.setStyle("-fx-text-fill: #6B6F76; -fx-font-size: 13px;");
@@ -299,7 +291,6 @@ public class AdminDashboardController {
                         "-fx-font-size: 14px;"
         );
 
-        // Custom Buttons Styling
         Button okButton = (Button) dialogPane.lookupButton(ButtonType.OK);
         Button cancelButton = (Button) dialogPane.lookupButton(ButtonType.CANCEL);
 

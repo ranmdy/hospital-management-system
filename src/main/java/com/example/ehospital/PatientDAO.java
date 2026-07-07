@@ -213,7 +213,6 @@ public class PatientDAO {
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 Patient p = buildPatient(rs);
-                // Manually set bed_id since we didn't add it to buildPatient()
                 p.setBedId(rs.getString("bed_id"));
                 conn.close();
                 return p;

@@ -61,17 +61,14 @@ public class DoctorChatController {
         doctor = SessionManager.getDoctor();
         if (doctor == null) return;
 
-        // refresh doctor from db
         DoctorDAO doctorDAO = new DoctorDAO();
         doctor = doctorDAO.getById(doctor.getId());
         SessionManager.loginAsDoctor(doctor);
 
-        // sidebar
         avatarLabel.setText(getInitials(doctor.getName()));
         userNameLabel.setText("Dr. " + doctor.getName());
         docSpecLabel.setText(doctor.getSpecialty());
 
-        // load current in-consult patient
         PatientDAO patientDAO = new PatientDAO();
         patient = patientDAO.getInConsultForDoctor(doctor.getId());
 
@@ -81,7 +78,6 @@ public class DoctorChatController {
             patientChatInfo.setText(patient.getIllnessClass() != null ?
                     patient.getIllnessClass() + " — " + patient.getEmail() : patient.getEmail());
 
-            // symptom summary
             symptomText.setText(patient.getSymptoms() != null ? patient.getSymptoms() : "No symptoms recorded");
             classChipLabel.setText(patient.getIllnessClass() != null ? patient.getIllnessClass() : "—");
         } else {
@@ -106,7 +102,7 @@ public class DoctorChatController {
         activeTransfer = transferDAO.getActiveByDoctorAndPatient(doctor.getId(), patient.getId());
 
         if (activeTransfer == null) {
-            // also check for any recent transfer (including declined)
+            // fallback: include declined transfers so we don't miss them
             activeTransfer = transferDAO.getByDoctorAndPatient(doctor.getId(), patient.getId());
         }
 
@@ -134,7 +130,6 @@ public class DoctorChatController {
                 transferStatusCard.setStyle("-fx-background-color: #FBEEE9; -fx-border-color: #F0D9D0; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 14;");
             }
 
-            // file request from hospital
             if (activeTransfer.isFileRequested() && !activeTransfer.isFileApproved() && !activeTransfer.isFileSent()) {
                 fileRequestBox.setVisible(true);
                 fileRequestBox.setManaged(true);
@@ -171,11 +166,9 @@ public class DoctorChatController {
             bubble.setPadding(new Insets(10, 14, 10, 14));
 
             if (msg.getSenderRole().equals("doctor")) {
-                // doctor message — right side, blue
                 bubble.setStyle("-fx-background-color: #1F4D8F; -fx-text-fill: white; -fx-background-radius: 16 16 4 16; -fx-font-size: 14;");
                 row.setAlignment(Pos.CENTER_RIGHT);
             } else {
-                // patient message — left side, white
                 bubble.setStyle("-fx-background-color: white; -fx-text-fill: #1A1C20; -fx-background-radius: 16 16 16 4; -fx-font-size: 14; -fx-border-color: #E8E4DC; -fx-border-radius: 16 16 16 4;");
                 row.setAlignment(Pos.CENTER_LEFT);
             }
@@ -225,14 +218,12 @@ public class DoctorChatController {
         boolean saved = rxDAO.save(patient.getId(), doctor.getId(), medicine, dosage, notes);
 
         if (saved) {
-            // send a system message in chat
             chatDAO.sendMessage(doctor.getId(), patient.getId(), "doctor",
                     "Prescription issued: " + medicine + " — " + dosage);
 
             rxMessage.setText("Prescription issued successfully!");
             rxMessage.setStyle("-fx-text-fill: #127566; -fx-font-size: 13;");
 
-            // hide form but keep chat active — consultation continues
             rxForm.setVisible(false);
             rxForm.setManaged(false);
             prescribeBtn.setDisable(true);
@@ -250,7 +241,6 @@ public class DoctorChatController {
     private void onNextPatient() {
         stopPolling();
 
-        // discharge current patient if still in consult
         if (patient != null && "in_consult".equals(patient.getStatus())) {
             PatientDAO pDao = new PatientDAO();
             pDao.updateStatus(patient.getId(), "discharged");
@@ -261,22 +251,17 @@ public class DoctorChatController {
         doctor = doctorDAO.getById(doctor.getId());
         SessionManager.loginAsDoctor(doctor);
 
-        // check if there's a next pending patient
         PatientDAO patientDAO = new PatientDAO();
         List<Patient> pending = patientDAO.getPendingForDoctor(doctor.getId());
 
         if (!pending.isEmpty()) {
-            // accept first pending patient
             Patient next = pending.get(0);
             patientDAO.updateStatus(next.getId(), "in_consult");
             doctorDAO.updateStatus(doctor.getId(), "busy");
             doctor = doctorDAO.getById(doctor.getId());
             SessionManager.loginAsDoctor(doctor);
-
-            // reload this chat screen with new patient
             loadScreen("doctor-chat.fxml");
         } else {
-            // no pending patients, go to dashboard
             loadScreen("doctor-dashboard.fxml");
         }
     }
@@ -288,7 +273,7 @@ public class DoctorChatController {
         DoctorDAO doctorDAO = new DoctorDAO();
         doctorDAO.updateStatus(doctor.getId(), "on_hold");
 
-        // re-queue pending patients to another available doctor
+        // move pending patients to another doctor before going on hold
         PatientDAO patientDAO = new PatientDAO();
         List<Patient> pending = patientDAO.getPendingForDoctor(doctor.getId());
         for (Patient p : pending) {
@@ -322,7 +307,6 @@ public class DoctorChatController {
     private void onViewFile() {
         if (patient == null) return;
 
-        // 1. Build the clinical data string using information from the active doctor session
         StringBuilder info = new StringBuilder();
         info.append("Name: ").append(patient.getName()).append("\n");
         info.append("Email: ").append(patient.getEmail()).append("\n");
@@ -343,13 +327,11 @@ public class DoctorChatController {
             info.append("Active Prescription: No prescriptions issued yet.\n");
         }
 
-        // 2. Initialize the information layout dialog stage
         Alert fileDialog = new Alert(Alert.AlertType.INFORMATION);
         fileDialog.setTitle("Patient Digital Health Record");
         fileDialog.setHeaderText(patient.getName() + " — Medical Record");
         fileDialog.setContentText(info.toString());
 
-        // 3. Inject Modern UI styling definitions into the Dialog Pane
         javafx.scene.control.DialogPane dialogPane = fileDialog.getDialogPane();
         dialogPane.setMinWidth(480);
         dialogPane.setStyle(
@@ -361,7 +343,7 @@ public class DoctorChatController {
         dialogPane.lookup(".header-panel").setStyle("-fx-background-color: #FFFFFF; -fx-padding: 0 0 12 0;");
         Label headerLabel = (Label) dialogPane.lookup(".header-panel .label");
         if (headerLabel != null) {
-            headerLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #4B3FA6;"); // Soft primary brand color accent
+            headerLabel.setStyle("-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #4B3FA6;");
         }
 
         Label contentLabel = (Label) dialogPane.lookup(".content.label");
@@ -427,12 +409,11 @@ public class DoctorChatController {
 
     @FXML
     private void onEndChat() {
-        if (patient == null) return; // No active patient to end chat with
+        if (patient == null) return;
 
-        // 1. Stop background message and status polling immediately
         stopPolling();
 
-        // 2. Check if a transfer request was sent and accepted/admitted by the hospital admin
+        // pick final patient status based on transfer and prescription state
         TransferDAO transferDAO = new TransferDAO();
         activeTransfer = transferDAO.getActiveByDoctorAndPatient(doctor.getId(), patient.getId());
         if (activeTransfer == null) {
@@ -440,7 +421,6 @@ public class DoctorChatController {
         }
 
         String nextPatientStatus;
-        // From existing logic, 'accepted' indicates a bed is reserved by the hospital admin
         if (activeTransfer != null && ("accepted".equals(activeTransfer.getStatus()) || "admitted".equals(activeTransfer.getStatus()))) {
             nextPatientStatus = "admitted";
         } else {
@@ -448,19 +428,14 @@ public class DoctorChatController {
             nextPatientStatus = rxDAO.getByPatientId(patient.getId()) != null ? "prescribed" : "discharged";
         }
 
-        // 3. Update patient status in the database
         PatientDAO patientDAO = new PatientDAO();
         patientDAO.updateStatus(patient.getId(), nextPatientStatus);
 
-        // 4. Update doctor status back to available
         DoctorDAO doctorDAO = new DoctorDAO();
         doctorDAO.updateStatus(doctor.getId(), "available");
-
-        // 5. Refresh the doctor's session state
         doctor = doctorDAO.getById(doctor.getId());
         SessionManager.loginAsDoctor(doctor);
 
-        // 6. Navigate away from the chat screen to the dashboard
         loadScreen("doctor-dashboard.fxml");
     }
 

@@ -53,14 +53,12 @@ public class LoginController {
             return;
         }
 
-        // Integrated validation: Check for uppercase characters
         if (containsUppercase(email)) {
             messageLabel.getStyleClass().setAll("error-label");
             messageLabel.setText("Email addresses must be inputted strictly using lowercase characters.");
             return;
         }
 
-        // Integrated validation: Enforce strict RFC-like email parsing structure
         if (!isStrictlyValidEmail(email)) {
             messageLabel.getStyleClass().setAll("error-label");
             messageLabel.setText("Please enter a valid email address.");
@@ -114,8 +112,6 @@ public class LoginController {
             System.out.println("Could not load screen: " + e.getMessage());
         }
     }
-
-    // --- Helper Email Validation Methods from RegistrationAndLoginPage ---
 
     private boolean containsUppercase(String email) {
         if (email == null) return false;

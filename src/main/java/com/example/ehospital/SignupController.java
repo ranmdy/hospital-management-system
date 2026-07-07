@@ -15,7 +15,6 @@ public class SignupController {
     @FXML private TextField emailField;
     @FXML private PasswordField passwordField;
 
-    // Fixed: Added <String> generic type for type-safe value retrieval
     @FXML private ComboBox<String> specialty;
 
     @FXML private TextField licenseField;
@@ -42,7 +41,6 @@ public class SignupController {
             hospitalCombo.getSelectionModel().selectFirst();
         }
 
-        // 2. Populate the Doctor Specialty Dropdown with categories from IllnessClassifier
         specialty.getItems().addAll(
                 "Audiologist",
                 "Andrologist",
@@ -85,15 +83,15 @@ public class SignupController {
             specialty.getSelectionModel().selectFirst();
         }
 
-        // Automatically updates the specialty to "Dentist" while typing, before clicking sign up and locks the specialty dropdown so the user cannot change it manually
+        // auto-select Dentist when license prefix matches; lock the dropdown so it can't be overridden
         licenseField.textProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && selectedRole.equals("doctor")) {
                 String validatedCategory = determineCategoryFromLicense(newValue);
                 if ("Dentist".equals(validatedCategory)) {
                     specialty.getSelectionModel().select("Dentist");
-                    specialty.setDisable(true); // Lock the field once set to Dentist
+                    specialty.setDisable(true);
                 } else {
-                    specialty.setDisable(false); // Unlock if prefix code changes to something else
+                    specialty.setDisable(false);
                 }
             }
         });
@@ -126,7 +124,6 @@ public class SignupController {
         hospitalBox.setVisible(false);
         hospitalBox.setManaged(false);
 
-        // Check if current text already triggers a Dentist block on switch
         String currentLicense = licenseField.getText();
         if ("Dentist".equals(determineCategoryFromLicense(currentLicense))) {
             specialty.getSelectionModel().select("Dentist");
@@ -162,7 +159,6 @@ public class SignupController {
             return;
         }
 
-        // --- NEW STRICT EMAIL VALIDATION ---
         if (containsUppercase(email)) {
             messageLabel.setText("Email addresses must be inputted strictly using lowercase characters.");
             messageLabel.getStyleClass().setAll("error-label");
@@ -190,7 +186,6 @@ public class SignupController {
                 return;
             }
 
-            // --- NEW LICENSE VALIDATION ---
             String validatedCategory = determineCategoryFromLicense(license);
             if (validatedCategory == null) {
                 messageLabel.setText("License format unrecognized. Must match standard MDCN prefix formats.");
@@ -244,10 +239,6 @@ public class SignupController {
             System.out.println("Could not load screen: " + e.getMessage());
         }
     }
-
-    // ==========================================================
-    // VALIDATION HELPER METHODS
-    // ==========================================================
 
     private boolean containsUppercase(String email) {
         if (email == null) return false;

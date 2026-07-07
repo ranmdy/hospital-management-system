@@ -42,20 +42,16 @@ public class PatientChatController {
         patient = SessionManager.getPatient();
         if (patient == null) return;
 
-        // refresh patient from db
         PatientDAO patientDAO = new PatientDAO();
         patient = patientDAO.getById(patient.getId());
         SessionManager.loginAsPatient(patient);
 
-        // sidebar
         avatarLabel.setText(getInitials(patient.getName()));
         userNameLabel.setText(patient.getName());
 
-        // patient details panel
         detailsName.setText(patient.getName());
         detailsInfo.setText(patient.getEmail());
 
-        // load assigned doctor info
         if (patient.getAssignedDoctorId() > 0) {
             DoctorDAO doctorDAO = new DoctorDAO();
             doctor = doctorDAO.getById(patient.getAssignedDoctorId());
@@ -93,11 +89,9 @@ public class PatientChatController {
             bubble.setPadding(new Insets(10, 14, 10, 14));
 
             if (msg.getSenderRole().equals("patient")) {
-                // patient message — right side, blue
                 bubble.setStyle("-fx-background-color: #1F4D8F; -fx-text-fill: white; -fx-background-radius: 16 16 4 16; -fx-font-size: 14;");
                 row.setAlignment(Pos.CENTER_RIGHT);
             } else {
-                // doctor message — left side, white
                 bubble.setStyle("-fx-background-color: white; -fx-text-fill: #1A1C20; -fx-background-radius: 16 16 16 4; -fx-font-size: 14; -fx-border-color: #E8E4DC; -fx-border-radius: 16 16 16 4;");
                 row.setAlignment(Pos.CENTER_LEFT);
             }
@@ -106,7 +100,6 @@ public class PatientChatController {
             chatBox.getChildren().add(row);
         }
 
-        // scroll to bottom
         Platform.runLater(() -> chatScroll.setVvalue(1.0));
     }
 
@@ -119,11 +112,9 @@ public class PatientChatController {
         rxPanel.getChildren().clear();
 
         if (rx != null) {
-            // styled card matching the design — navy header + body
             VBox rxCard = new VBox();
             rxCard.setStyle("-fx-background-color: white; -fx-border-color: #D7E3F4; -fx-border-radius: 15; -fx-background-radius: 15;");
 
-            // navy header
             HBox rxHeader = new HBox(9);
             rxHeader.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
             rxHeader.setStyle("-fx-background-color: #1F4D8F; -fx-padding: 14 16; -fx-background-radius: 15 15 0 0;");
@@ -133,7 +124,6 @@ public class PatientChatController {
             rxTitle.setStyle("-fx-font-size: 14; -fx-font-weight: bold; -fx-text-fill: white;");
             rxHeader.getChildren().addAll(rxSymbol, rxTitle);
 
-            // body
             VBox rxBody = new VBox(3);
             rxBody.setStyle("-fx-padding: 16;");
 
@@ -165,7 +155,6 @@ public class PatientChatController {
             rxCard.getChildren().addAll(rxHeader, rxBody);
             rxPanel.getChildren().add(rxCard);
         } else {
-            // empty state — dashed border
             VBox empty = new VBox(8);
             empty.setAlignment(javafx.geometry.Pos.CENTER);
             empty.setStyle("-fx-background-color: white; -fx-border-color: #D9D4CA; -fx-border-style: dashed; -fx-border-radius: 15; -fx-background-radius: 15; -fx-padding: 24 18;");
@@ -189,7 +178,7 @@ public class PatientChatController {
 
         chatDAO.sendMessage(patient.getId(), doctor.getId(), "patient", text);
         messageField.clear();
-        lastMessageCount = 0; // force reload
+        lastMessageCount = 0;
         loadMessages();
     }
 
