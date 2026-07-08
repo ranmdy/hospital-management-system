@@ -194,6 +194,8 @@ public class IllnessClassifier {
             return "Sports Medicine";
         }
         return "Other";
+
+
     }
 
     public static String getSpecialty(String illnessClass) {
