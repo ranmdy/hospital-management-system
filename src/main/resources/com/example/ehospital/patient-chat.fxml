@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox prefHeight="900" prefWidth="1500" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.ehospital.PatientChatController"
+      stylesheets="@styles.css">
+
+    <!-- SIDEBAR -->
+    <VBox styleClass="sidebar" spacing="3">
+        <HBox alignment="CENTER_LEFT" spacing="11">
+            <Label text="+" styleClass="sidebar-logo"/>
+            <Label text="E-Healthcare Management" styleClass="sidebar-brand"/>
+        </HBox>
+        <Region prefHeight="20"/>
+        <Button text="Dashboard" styleClass="nav-item" maxWidth="Infinity" onAction="#goToDashboard"/>
+        <Button text="Symptom check" styleClass="nav-item" maxWidth="Infinity" onAction="#goToSymptom"/>
+        <Button text="Consultation" styleClass="nav-item-active" maxWidth="Infinity"/>
+        <Button text="Prescription" styleClass="nav-item" maxWidth="Infinity" onAction="#goToPrescription"/>
+        <Region VBox.vgrow="ALWAYS"/>
+        <VBox styleClass="sidebar-divider" spacing="8">
+            <HBox alignment="CENTER_LEFT" spacing="11">
+                <Label fx:id="avatarLabel" styleClass="avatar, avatar-blue"/>
+                <VBox>
+                    <Label fx:id="userNameLabel" styleClass="sidebar-user-name"/>
+                    <Label text="Patient" styleClass="sidebar-user-sub"/>
+                </VBox>
+            </HBox>
+            <Button text="Log out" styleClass="btn-logout" onAction="#onLogout"/>
+        </VBox>
+    </VBox>
+
+    <!-- MAIN: chat + prescription side panel -->
+    <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: #F4F1EC;">
+        <!-- Doctor header bar -->
+        <HBox style="-fx-background-color: white; -fx-padding: 16 26; -fx-border-color: #E8E4DC; -fx-border-width: 0 0 1 0;" alignment="CENTER_LEFT" spacing="13">
+            <Label fx:id="doctorChatAvatar" style="-fx-background-color: #DDF0EB; -fx-text-fill: #127566; -fx-background-radius: 12; -fx-pref-width: 44; -fx-pref-height: 44; -fx-alignment: center; -fx-font-weight: bold; -fx-font-size: 15;"/>
+            <VBox HBox.hgrow="ALWAYS">
+                <Label fx:id="doctorChatName" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+                <Label fx:id="doctorChatSpec" style="-fx-font-size: 13; -fx-text-fill: #127566; -fx-font-weight: bold;"/>
+            </VBox>
+        </HBox>
+
+        <HBox VBox.vgrow="ALWAYS">
+            <!-- Chat area -->
+            <VBox HBox.hgrow="ALWAYS">
+                <ScrollPane fx:id="chatScroll" fitToWidth="true" style="-fx-background-color: #F4F1EC; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
+                    <VBox fx:id="chatBox" spacing="10" style="-fx-padding: 22 26;"/>
+                </ScrollPane>
+
+                <!-- Input bar -->
+                <HBox style="-fx-background-color: white; -fx-padding: 14 26; -fx-border-color: #E8E4DC; -fx-border-width: 1 0 0 0;" spacing="11" alignment="CENTER_LEFT">
+                    <TextField fx:id="messageField" promptText="Type a message..." styleClass="text-input" HBox.hgrow="ALWAYS" onAction="#onSend"/>
+                    <Button text="Send" styleClass="btn-primary" onAction="#onSend"/>
+                </HBox>
+            </VBox>
+
+            <!-- Right side panel -->
+            <ScrollPane fitToWidth="true" style="-fx-background-color: #FBFAF7; -fx-border-color: #E8E4DC; -fx-border-width: 0 0 0 1; -fx-pref-width: 330; -fx-min-width: 330;">
+                <VBox style="-fx-padding: 22;" spacing="14">
+                    <Label text="PRESCRIPTION" style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
+                    <VBox fx:id="rxPanel" spacing="10">
+                        <Label text="No prescription yet. Your doctor will issue one here after the consultation." style="-fx-font-size: 13; -fx-text-fill: #9A9EA5; -fx-wrap-text: true;"/>
+                    </VBox>
+                    <Label text="YOUR DETAILS" style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #8A8F94; -fx-padding: 6 0 0 0;"/>
+                    <VBox fx:id="detailsPanel" style="-fx-background-color: white; -fx-border-color: #E8E4DC; -fx-border-radius: 13; -fx-background-radius: 13; -fx-padding: 14 16;" spacing="2">
+                        <Label fx:id="detailsName" style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #3A3F47;"/>
+                        <Label fx:id="detailsInfo" style="-fx-font-size: 13; -fx-text-fill: #9A9EA5;"/>
+                    </VBox>
+                </VBox>
+            </ScrollPane>
+        </HBox>
+    </VBox>
+</HBox>

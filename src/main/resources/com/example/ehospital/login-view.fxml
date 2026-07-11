@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.ehospital.LoginController"
+      stylesheets="@styles.css" prefHeight="900" prefWidth="1500">
+
+    <!-- LEFT: Navy branding panel -->
+    <VBox styleClass="auth-left" HBox.hgrow="ALWAYS" maxWidth="420" minWidth="380">
+        <HBox alignment="CENTER_LEFT" spacing="11">
+            <Label text="+" styleClass="sidebar-logo"/>
+            <Label text="E-Healthcare Management" style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;"/>
+        </HBox>
+
+        <Region VBox.vgrow="ALWAYS"/>
+
+        <VBox spacing="16" maxWidth="380">
+            <Label text="Care that travels to you." styleClass="auth-title" wrapText="true"/>
+            <Label text="Connect with licensed doctors remotely. Consultations, prescriptions, and hospital admissions, all in one place." styleClass="auth-subtitle" wrapText="true"/>
+
+            <VBox spacing="11">
+                <HBox alignment="CENTER_LEFT" spacing="9">
+                    <Label text="✓" style="-fx-background-color: rgba(255,255,255,0.14); -fx-background-radius: 50; -fx-pref-width: 22; -fx-pref-height: 22; -fx-alignment: center; -fx-text-fill: white; -fx-font-size: 12;"/>
+                    <Label text="Symptoms routed to the right specialist" styleClass="auth-check"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="9">
+                    <Label text="✓" style="-fx-background-color: rgba(255,255,255,0.14); -fx-background-radius: 50; -fx-pref-width: 22; -fx-pref-height: 22; -fx-alignment: center; -fx-text-fill: white; -fx-font-size: 12;"/>
+                    <Label text="Live chat, e-prescriptions and bed admission" styleClass="auth-check"/>
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="9">
+                    <Label text="✓" style="-fx-background-color: rgba(255,255,255,0.14); -fx-background-radius: 50; -fx-pref-width: 22; -fx-pref-height: 22; -fx-alignment: center; -fx-text-fill: white; -fx-font-size: 12;"/>
+                    <Label text="Patient, doctor and hospital — one system" styleClass="auth-check"/>
+                </HBox>
+            </VBox>
+        </VBox>
+
+        <Region VBox.vgrow="ALWAYS"/>
+
+        <Label text="E-Healthcare Management Center · NDPR-compliant" styleClass="auth-footer"/>
+    </VBox>
+
+    <!-- RIGHT: Login form -->
+    <VBox styleClass="auth-right" HBox.hgrow="ALWAYS" alignment="CENTER">
+        <VBox maxWidth="380" spacing="0">
+            <Label text="Welcome back" styleClass="auth-heading"/>
+            <Label text="Sign in or create an account to continue." styleClass="auth-sub">
+                <VBox.margin><Insets bottom="20"/></VBox.margin>
+            </Label>
+
+            <!-- Segment toggle -->
+            <HBox styleClass="segment-bar" alignment="CENTER">
+                <Button text="Log in" styleClass="segment-btn-active" disable="true"/>
+                <Button text="Register" styleClass="segment-btn" onAction="#goToSignup"/>
+            </HBox>
+            <Region prefHeight="20"/>
+
+            <!-- Role selector -->
+            <Label text="I am a" styleClass="field-label">
+                <VBox.margin><Insets bottom="9"/></VBox.margin>
+            </Label>
+            <HBox spacing="9" fx:id="roleBar">
+                <VBox fx:id="patientCard" styleClass="role-card-active" onMouseClicked="#selectPatient" HBox.hgrow="ALWAYS" alignment="CENTER">
+                    <Label text="👤" styleClass="role-emoji"/>
+                    <Label text="Patient" styleClass="role-label"/>
+                </VBox>
+                <VBox fx:id="doctorCard" styleClass="role-card" onMouseClicked="#selectDoctor" HBox.hgrow="ALWAYS" alignment="CENTER">
+                    <Label text="🩺" styleClass="role-emoji"/>
+                    <Label text="Doctor" styleClass="role-label"/>
+                </VBox>
+                <VBox fx:id="adminCard" styleClass="role-card" onMouseClicked="#selectAdmin" HBox.hgrow="ALWAYS" alignment="CENTER">
+                    <Label text="🏥" styleClass="role-emoji"/>
+                    <Label text="Hospital" styleClass="role-label"/>
+                </VBox>
+            </HBox>
+            <Region prefHeight="18"/>
+
+            <!-- Fields -->
+            <VBox spacing="13">
+                <VBox spacing="6">
+                    <Label text="Email" styleClass="field-label"/>
+                    <TextField fx:id="emailField" promptText="you@email.com" styleClass="text-input"/>
+                </VBox>
+                <VBox spacing="6">
+                    <Label text="Password" styleClass="field-label"/>
+                    <PasswordField fx:id="passwordField" promptText="••••••••" styleClass="text-input"/>
+                </VBox>
+            </VBox>
+            <Region prefHeight="18"/>
+
+            <Button text="Sign in" onAction="#onLogin" styleClass="btn-primary" maxWidth="Infinity"/>
+
+            <Label fx:id="messageLabel" styleClass="error-label" wrapText="true">
+                <VBox.margin><Insets top="12"/></VBox.margin>
+            </Label>
+
+            <Label text="Protected by end-to-end encryption" style="-fx-font-size: 12; -fx-text-fill: #9A9EA5; -fx-alignment: center;" alignment="CENTER">
+                <VBox.margin><Insets top="12"/></VBox.margin>
+            </Label>
+        </VBox>
+    </VBox>
+</HBox>

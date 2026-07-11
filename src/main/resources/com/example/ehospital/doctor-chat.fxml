@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox prefHeight="900" prefWidth="1500" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.ehospital.DoctorChatController"
+      stylesheets="@styles.css">
+
+    <!-- SIDEBAR -->
+    <VBox styleClass="sidebar" spacing="3">
+        <HBox alignment="CENTER_LEFT" spacing="11">
+            <Label text="+" styleClass="sidebar-logo"/>
+            <Label text="E-Healthcare Management" styleClass="sidebar-brand"/>
+        </HBox>
+        <Region prefHeight="20"/>
+        <Button text="Dashboard" styleClass="nav-item" maxWidth="Infinity" onAction="#goToDashboard"/>
+        <Button text="Consultation" styleClass="nav-item-active" maxWidth="Infinity"/>
+        <Button text="Transfer" styleClass="nav-item" maxWidth="Infinity" onAction="#onTransfer"/>
+        <Button text="Prescription" styleClass="nav-item" maxWidth="Infinity" onAction="#goToPrescription"/>
+        <Region VBox.vgrow="ALWAYS"/>
+        <VBox styleClass="sidebar-divider" spacing="8">
+            <HBox alignment="CENTER_LEFT" spacing="11">
+                <Label fx:id="avatarLabel" styleClass="avatar, avatar-blue"/>
+                <VBox>
+                    <Label fx:id="userNameLabel" styleClass="sidebar-user-name"/>
+                    <Label fx:id="docSpecLabel" styleClass="sidebar-user-sub"/>
+                </VBox>
+            </HBox>
+            <Button text="Log out" styleClass="btn-logout" onAction="#onLogout"/>
+        </VBox>
+    </VBox>
+
+    <!-- MAIN -->
+    <VBox HBox.hgrow="ALWAYS" style="-fx-background-color: #F4F1EC;">
+        <!-- Patient header bar -->
+        <HBox style="-fx-background-color: white; -fx-padding: 16 26; -fx-border-color: #E8E4DC; -fx-border-width: 0 0 1 0;" alignment="CENTER_LEFT" spacing="13">
+            <Label fx:id="patientChatAvatar" style="-fx-background-color: #EEF4FC; -fx-text-fill: #1F4D8F; -fx-background-radius: 12; -fx-pref-width: 44; -fx-pref-height: 44; -fx-alignment: center; -fx-font-weight: bold; -fx-font-size: 15;"/>
+            <VBox HBox.hgrow="ALWAYS">
+                <Label fx:id="patientChatName" style="-fx-font-size: 16; -fx-font-weight: bold;"/>
+                <Label fx:id="patientChatInfo" style="-fx-font-size: 13; -fx-text-fill: #8A8F94;"/>
+            </VBox>
+            <Label fx:id="patientStatusPill" styleClass="status-busy" text="In consult"/>
+        </HBox>
+
+        <HBox VBox.vgrow="ALWAYS">
+            <!-- Chat area -->
+            <VBox HBox.hgrow="ALWAYS">
+                <ScrollPane fx:id="chatScroll" fitToWidth="true" style="-fx-background-color: #F4F1EC; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
+                    <VBox fx:id="chatBox" spacing="10" style="-fx-padding: 22 26;"/>
+                </ScrollPane>
+
+                <HBox style="-fx-background-color: white; -fx-padding: 14 26; -fx-border-color: #E8E4DC; -fx-border-width: 1 0 0 0;" spacing="11" alignment="CENTER_LEFT">
+                    <TextField fx:id="messageField" promptText="Message your patient..." styleClass="text-input" HBox.hgrow="ALWAYS" onAction="#onSend"/>
+                    <Button text="Send" styleClass="btn-primary" onAction="#onSend"/>
+                    <Button fx:id="endChatBtn" text="End Chat" onAction="#onEndChat" style="-fx-background-color: #8B0000;-fx-text-fill: white;-fx-font-size: 15;-fx-font-weight: bold;-fx-padding: 13 20 13 20;-fx-background-radius: 11;-fx-cursor: hand;-fx-border-color: transparent;"/>
+                </HBox>
+            </VBox>
+
+            <!-- Right panel: symptoms + clinical decision -->
+            <ScrollPane fitToWidth="true" style="-fx-background-color: #FBFAF7; -fx-border-color: #E8E4DC; -fx-border-width: 0 0 0 1; -fx-pref-width: 320; -fx-min-width: 320;">
+                <VBox style="-fx-padding: 22;" spacing="18">
+                    <!-- Symptom summary -->
+                    <VBox spacing="8">
+                        <Label text="SYMPTOM SUMMARY" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
+                        <VBox styleClass="card" spacing="6">
+                            <Label fx:id="symptomText" style="-fx-font-size: 14; -fx-text-fill: #3A3F47; -fx-wrap-text: true;" wrapText="true"/>
+                            <Label fx:id="classChipLabel" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #1F4D8F; -fx-background-color: #EEF4FC; -fx-background-radius: 20; -fx-padding: 4 10;"/>
+                        </VBox>
+                        <Button text="View patient file" onAction="#onViewFile" maxWidth="Infinity"
+                                style="-fx-background-color: #EDEAE2; -fx-text-fill: #4A4F57; -fx-font-size: 12; -fx-font-weight: bold; -fx-padding: 8 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: transparent;"/>
+                    </VBox>
+
+                    <!-- Clinical decision -->
+                    <VBox spacing="8">
+                        <Label text="CLINICAL DECISION" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
+
+                        <Button fx:id="prescribeBtn" onAction="#onPrescribe" maxWidth="Infinity"
+                                style="-fx-background-color: #1F4D8F; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 14; -fx-background-radius: 12; -fx-cursor: hand; -fx-border-color: transparent; -fx-alignment: center-left;"
+                                text="Prescribe drugs"/>
+                        <Button maxWidth="Infinity" onAction="#onTransfer"
+                                style="-fx-background-color: white; -fx-text-fill: #4B3FA6; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 14; -fx-background-radius: 12; -fx-cursor: hand; -fx-border-color: #D2CCEC; -fx-alignment: center-left;"
+                                text="Transfer to hospital"/>
+                    </VBox>
+
+                    <!-- Prescription form (hidden by default) -->
+                    <VBox fx:id="rxForm" spacing="10" visible="false" managed="false">
+                        <Label text="WRITE PRESCRIPTION" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
+                        <VBox spacing="6">
+                            <Label text="Medicine" styleClass="field-label"/>
+                            <TextField fx:id="medicineField" promptText="e.g. Amoxicillin 500mg" styleClass="text-input"/>
+                        </VBox>
+                        <VBox spacing="6">
+                            <Label text="Dosage" styleClass="field-label"/>
+                            <TextField fx:id="dosageField" promptText="e.g. 1 tablet, 3 times daily" styleClass="text-input"/>
+                        </VBox>
+                        <VBox spacing="6">
+                            <Label text="Notes" styleClass="field-label"/>
+                            <TextArea fx:id="notesField" promptText="Additional instructions..." prefRowCount="3" wrapText="true" styleClass="text-input"/>
+                        </VBox>
+                        <Button text="Issue prescription" styleClass="btn-primary" maxWidth="Infinity" onAction="#onIssuePrescription"/>
+                        <Label fx:id="rxMessage" styleClass="error-label"/>
+                    </VBox>
+
+                    <!-- Transfer status (shown when transfer exists) -->
+                    <VBox fx:id="transferStatusBox" spacing="8" visible="false" managed="false">
+                        <Label text="TRANSFER STATUS" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
+                        <VBox fx:id="transferStatusCard" styleClass="card" spacing="6">
+                            <Label fx:id="transferHospitalLabel" style="-fx-font-size: 14; -fx-font-weight: bold;"/>
+                            <Label fx:id="transferStatusLabel" style="-fx-font-size: 13;"/>
+                        </VBox>
+                    </VBox>
+
+                    <!-- File request from hospital (shown when hospital requests the file) -->
+                    <VBox fx:id="fileRequestBox" spacing="8" visible="false" managed="false">
+                        <Label text="FILE REQUEST" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
+                        <VBox style="-fx-background-color: #FFF8EC; -fx-border-color: #F0DFB8; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 14;" spacing="8">
+                            <Label fx:id="fileRequestLabel" style="-fx-font-size: 13; -fx-text-fill: #7A5A12;" wrapText="true"/>
+                            <Button fx:id="approveFileBtn" text="Approve and share file" onAction="#onApproveFile" maxWidth="Infinity"
+                                    style="-fx-background-color: #4B3FA6; -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-padding: 10; -fx-background-radius: 10; -fx-cursor: hand; -fx-border-color: transparent;"/>
+                        </VBox>
+                    </VBox>
+
+                    <!-- After consult -->
+                    <VBox fx:id="afterConsult" spacing="10" visible="false" managed="false">
+                        <Label text="CONSULTATION COMPLETE" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
+                        <Button text="Take next patient" styleClass="btn-primary" maxWidth="Infinity" onAction="#onNextPatient"/>
+                        <Button text="Go on hold" maxWidth="Infinity" onAction="#onHold"
+                                style="-fx-background-color: #EDEAE2; -fx-text-fill: #4A4F57; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 13; -fx-background-radius: 11; -fx-cursor: hand; -fx-border-color: transparent;"/>
+                    </VBox>
+                </VBox>
+            </ScrollPane>
+        </HBox>
+    </VBox>
+</HBox>

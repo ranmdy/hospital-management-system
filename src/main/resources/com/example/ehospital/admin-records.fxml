@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox prefHeight="900" prefWidth="1500" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.ehospital.AdminRecordsController"
+      stylesheets="@styles.css">
+
+    <!-- SIDEBAR -->
+    <VBox styleClass="sidebar" spacing="3">
+        <HBox alignment="CENTER_LEFT" spacing="11">
+            <Label text="+" styleClass="sidebar-logo"/>
+            <Label text="E-Healthcare Management" styleClass="sidebar-brand"/>
+        </HBox>
+        <Region prefHeight="20"/>
+
+        <Button text="Transfer requests" styleClass="nav-item" maxWidth="Infinity" onAction="#goToTransfers"/>
+        <Button text="Patient records" styleClass="nav-item-active" maxWidth="Infinity"/>
+        <Button text="Admission" styleClass="nav-item" maxWidth="Infinity" onAction="#goToAdmission"/>
+        <Region VBox.vgrow="ALWAYS"/>
+
+        <VBox styleClass="sidebar-divider" spacing="8">
+            <HBox alignment="CENTER_LEFT" spacing="11">
+                <Label fx:id="avatarLabel" styleClass="avatar, avatar-blue"/>
+                <VBox>
+                    <Label fx:id="userNameLabel" styleClass="sidebar-user-name"/>
+                    <Label text="Hospital Admin" styleClass="sidebar-user-sub"/>
+                </VBox>
+            </HBox>
+            <Button text="Log out" styleClass="btn-logout" onAction="#onLogout"/>
+        </VBox>
+    </VBox>
+
+    <!-- MAIN -->
+    <VBox HBox.hgrow="ALWAYS">
+        <HBox styleClass="topbar" alignment="CENTER_LEFT">
+            <VBox>
+                <Label text="Patient Records" styleClass="topbar-title"/>
+                <Label fx:id="topSubLabel" text="Clinical files for transferred patients" styleClass="topbar-sub"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Refresh" styleClass="btn-primary" style="-fx-background-color: #EDEAE2; -fx-text-fill: #4A4F57; -fx-font-size: 13; -fx-padding: 6 14;" onAction="#onRefresh"/>
+        </HBox>
+
+        <ScrollPane fitToWidth="true" style="-fx-background-color: #F4F1EC; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
+            <VBox styleClass="content-area" spacing="18">
+                <!-- Two column: patient list + detail -->
+                <HBox spacing="18">
+                    <!-- LEFT: Patient list -->
+                    <VBox spacing="13" minWidth="340" maxWidth="380">
+                        <Label fx:id="listTitle" style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #8A8F94;" text="PATIENTS"/>
+                        <VBox fx:id="patientList" spacing="10">
+                            <Label text="No patient records yet." style="-fx-font-size: 14; -fx-text-fill: #9A9EA5;"/>
+                        </VBox>
+                    </VBox>
+
+                    <!-- RIGHT: Detail panel -->
+                    <VBox fx:id="detailPanel" HBox.hgrow="ALWAYS" visible="false" managed="false">
+                        <VBox styleClass="card" spacing="0">
+                            <!-- Header -->
+                            <VBox style="-fx-padding: 22 24; -fx-border-color: #EDEAE2; -fx-border-width: 0 0 1 0;" spacing="12">
+                                <HBox spacing="13" alignment="CENTER_LEFT">
+                                    <Label fx:id="detailAvatar" style="-fx-background-color: #EEF4FC; -fx-text-fill: #1F4D8F; -fx-pref-width: 48; -fx-pref-height: 48; -fx-background-radius: 13; -fx-alignment: center; -fx-font-weight: bold; -fx-font-size: 15;"/>
+                                    <VBox HBox.hgrow="ALWAYS">
+                                        <Label fx:id="detailName" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
+                                        <Label fx:id="detailEmail" style="-fx-font-size: 13; -fx-text-fill: #8A8F94;"/>
+                                    </VBox>
+                                    <Label fx:id="detailStatusPill" style="-fx-font-size: 11; -fx-font-weight: bold;"/>
+                                </HBox>
+                            </VBox>
+
+                            <!-- Body -->
+                            <VBox style="-fx-padding: 20 24;" spacing="18">
+                                <!-- Demographics -->
+                                <HBox spacing="26">
+                                    <VBox spacing="2">
+                                        <Label text="CLASSIFICATION" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #9A9EA5;"/>
+                                        <Label fx:id="detailClass" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="ASSIGNED DOCTOR" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #9A9EA5;"/>
+                                        <Label fx:id="detailDoctor" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="TRANSFER STATUS" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #9A9EA5;"/>
+                                        <Label fx:id="detailTransferStatus" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                                    </VBox>
+                                </HBox>
+
+                                <!-- Symptoms -->
+                                <VBox spacing="7">
+                                    <Label text="SYMPTOMS" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #9A9EA5;"/>
+                                    <Label fx:id="detailSymptoms" style="-fx-font-size: 14; -fx-text-fill: #3A3F47;" wrapText="true"/>
+                                </VBox>
+
+                                <!-- Clinical note from transfer -->
+                                <VBox spacing="7">
+                                    <Label text="CLINICAL NOTE" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #9A9EA5;"/>
+                                    <Label fx:id="detailClinicalNote" style="-fx-font-size: 14; -fx-text-fill: #3A3F47;" wrapText="true"/>
+                                </VBox>
+
+                                <!-- Prescriptions -->
+                                <VBox spacing="7">
+                                    <Label text="PRESCRIPTIONS" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #9A9EA5;"/>
+                                    <VBox fx:id="detailRxList" spacing="8"/>
+                                </VBox>
+
+                                <!-- Consultation transcript -->
+                                <VBox spacing="7">
+                                    <Label text="CONSULTATION TRANSCRIPT" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #9A9EA5;"/>
+                                    <VBox fx:id="detailChatList" spacing="4" style="-fx-background-color: #FBFAF7; -fx-border-color: #EAE6DE; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 14; -fx-max-height: 250;"/>
+                                </VBox>
+                            </VBox>
+                        </VBox>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </VBox>
+</HBox>

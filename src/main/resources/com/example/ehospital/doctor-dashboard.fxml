@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox prefHeight="900" prefWidth="1500" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.ehospital.DoctorDashboardController"
+      stylesheets="@styles.css">
+
+    <!-- SIDEBAR -->
+    <VBox styleClass="sidebar" spacing="3">
+        <HBox alignment="CENTER_LEFT" spacing="11">
+            <Label text="+" styleClass="sidebar-logo"/>
+            <Label text="E-Healthcare Management" styleClass="sidebar-brand"/>
+        </HBox>
+        <Region prefHeight="20"/>
+
+        <Button text="Dashboard" styleClass="nav-item-active" maxWidth="Infinity"/>
+        <Button text="Consultation" styleClass="nav-item" maxWidth="Infinity" onAction="#goToConsultation"/>
+        <Button text="Transfer" styleClass="nav-item" maxWidth="Infinity" onAction="#goToTransfer"/>
+        <Button text="Prescription" styleClass="nav-item" maxWidth="Infinity" onAction="#goToPrescription"/>
+
+        <Region VBox.vgrow="ALWAYS"/>
+
+        <VBox styleClass="sidebar-divider" spacing="8">
+            <HBox alignment="CENTER_LEFT" spacing="11">
+                <Label fx:id="avatarLabel" styleClass="avatar, avatar-blue"/>
+                <VBox>
+                    <Label fx:id="userNameLabel" styleClass="sidebar-user-name"/>
+                    <Label fx:id="specialtyLabel" styleClass="sidebar-user-sub"/>
+                </VBox>
+            </HBox>
+            <Button text="Log out" styleClass="btn-logout" onAction="#onLogout"/>
+        </VBox>
+    </VBox>
+
+    <!-- MAIN -->
+    <VBox HBox.hgrow="ALWAYS">
+        <!-- TOPBAR -->
+        <HBox styleClass="topbar" alignment="CENTER_LEFT">
+            <VBox>
+                <Label text="Dashboard" styleClass="topbar-title"/>
+                <Label fx:id="topSubLabel" styleClass="topbar-sub" text="Your patient queue"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label fx:id="doctorStatusLabel" styleClass="status-available" text="Available"/>
+        </HBox>
+
+        <!-- CONTENT -->
+        <ScrollPane fitToWidth="true" style="-fx-background-color: #F4F1EC; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
+            <VBox styleClass="content-area" spacing="18">
+
+                <!-- Two-column layout: Queue left, Current patient right -->
+                <HBox spacing="18">
+                    <!-- LEFT: Queue -->
+                    <VBox HBox.hgrow="ALWAYS" spacing="14">
+                        <!-- Queue title + availability toggle -->
+                        <HBox alignment="CENTER_LEFT">
+                            <Label fx:id="queueTitle" style="-fx-font-size: 17; -fx-font-weight: bold; -fx-text-fill: #1A1C20;" text="Patient queue"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <HBox fx:id="availToggle" spacing="0" style="-fx-background-color: #EDEAE2; -fx-background-radius: 11; -fx-padding: 4;">
+                                <Button fx:id="btnAvailable" text="Available" onAction="#setAvailable"
+                                        style="-fx-background-color: white; -fx-text-fill: #127566; -fx-font-size: 12; -fx-font-weight: bold; -fx-padding: 6 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: transparent;"/>
+                                <Button fx:id="btnBusy" text="Busy" onAction="#setBusy"
+                                        style="-fx-background-color: transparent; -fx-text-fill: #6B6F76; -fx-font-size: 12; -fx-font-weight: bold; -fx-padding: 6 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: transparent;"/>
+                                <Button fx:id="btnOnHold" text="On-hold" onAction="#setOnHold"
+                                        style="-fx-background-color: transparent; -fx-text-fill: #6B6F76; -fx-font-size: 12; -fx-font-weight: bold; -fx-padding: 6 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: transparent;"/>
+                            </HBox>
+                        </HBox>
+
+                        <!-- Queue list -->
+                        <VBox fx:id="queueList" spacing="10">
+                            <Label fx:id="emptyLabel" text="No pending patients in your queue." style="-fx-font-size: 14; -fx-text-fill: #9A9EA5;"/>
+                        </VBox>
+                    </VBox>
+
+                    <!-- RIGHT: Current patient navy card -->
+                    <VBox fx:id="currentPatientCard" styleClass="card-navy" spacing="10" minWidth="320" maxWidth="360" visible="false" managed="false">
+                        <Label text="CURRENT ACTIVE PATIENT" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #90A0BC;"/>
+                        <HBox spacing="13" alignment="CENTER_LEFT">
+                            <Label fx:id="currentPatientAvatar" style="-fx-background-color: rgba(255,255,255,0.14); -fx-text-fill: white; -fx-pref-width: 50; -fx-pref-height: 50; -fx-font-size: 16; -fx-font-weight: bold; -fx-background-radius: 14; -fx-alignment: center;"/>
+                            <VBox spacing="3">
+                                <Label fx:id="currentPatientName" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                                <Label fx:id="currentPatientClass" style="-fx-font-size: 13; -fx-text-fill: #A9BBD6;"/>
+                            </VBox>
+                        </HBox>
+                        <VBox style="-fx-background-color: rgba(255,255,255,0.08); -fx-background-radius: 12; -fx-padding: 13 15;">
+                            <Label fx:id="currentPatientSymptoms" style="-fx-font-size: 13; -fx-text-fill: #CFDAEC;" wrapText="true"/>
+                        </VBox>
+                        <Button text="Resume Consultation" onAction="#goToConsultation"
+                                style="-fx-background-color: white; -fx-text-fill: #13294C; -fx-font-size: 15; -fx-font-weight: bold; -fx-padding: 13; -fx-background-radius: 11; -fx-cursor: hand; -fx-border-color: transparent;" maxWidth="Infinity"/>
+                        <HBox spacing="9">
+                            <Button text="Next patient" onAction="#onNextFromDash" HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                                    style="-fx-background-color: rgba(255,255,255,0.12); -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-padding: 11; -fx-background-radius: 11; -fx-cursor: hand; -fx-border-color: transparent;"/>
+                            <Button text="Go on-hold" onAction="#setOnHold" HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                                    style="-fx-background-color: rgba(255,255,255,0.12); -fx-text-fill: white; -fx-font-size: 13; -fx-font-weight: bold; -fx-padding: 11; -fx-background-radius: 11; -fx-cursor: hand; -fx-border-color: transparent;"/>
+                        </HBox>
+                    </VBox>
+                </HBox>
+
+                <!-- Status legend card -->
+                <VBox styleClass="card" spacing="13" style="-fx-padding: 18 20;">
+                    <Label text="STATUS LIFECYCLE" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #8A8F94;"/>
+                    <HBox spacing="24">
+                        <VBox spacing="9">
+                            <Label text="Patient" style="-fx-font-size: 12; -fx-text-fill: #9A9EA5; -fx-font-weight: bold;"/>
+                            <HBox spacing="8">
+                                <Label text="Pending" styleClass="status-pending"/>
+                                <Label text="In consult" styleClass="status-busy"/>
+                                <Label text="Prescribed" styleClass="status-available"/>
+                                <Label text="Admitted" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #B14A33; -fx-background-color: #FBEEE9; -fx-background-radius: 20; -fx-padding: 4 10;"/>
+                                <Label text="Discharged" style="-fx-font-size: 12; -fx-font-weight: bold; -fx-text-fill: #6B6F76; -fx-background-color: #F0EEEA; -fx-background-radius: 20; -fx-padding: 4 10;"/>
+                            </HBox>
+                        </VBox>
+                        <VBox spacing="9">
+                            <Label text="Doctor" style="-fx-font-size: 12; -fx-text-fill: #9A9EA5; -fx-font-weight: bold;"/>
+                            <HBox spacing="8">
+                                <Label text="Available" styleClass="status-available"/>
+                                <Label text="Busy" styleClass="status-busy"/>
+                                <Label text="On-hold" styleClass="status-pending"/>
+                            </HBox>
+                        </VBox>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </VBox>
+</HBox>

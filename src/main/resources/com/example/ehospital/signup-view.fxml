@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox prefHeight="900" prefWidth="1500" stylesheets="@styles.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.ehospital.SignupController">
+
+    <!-- LEFT: Navy branding panel -->
+    <VBox maxWidth="420" minWidth="380" styleClass="auth-left" HBox.hgrow="ALWAYS">
+        <HBox alignment="CENTER_LEFT" spacing="11">
+            <Label styleClass="sidebar-logo" text="+" />
+            <Label style="-fx-font-size: 20; -fx-font-weight: bold; -fx-text-fill: white;" text="E-Healthcare Management" />
+        </HBox>
+
+        <Region VBox.vgrow="ALWAYS" />
+
+        <VBox maxWidth="380" spacing="16">
+            <Label styleClass="auth-title" text="Care that travels to you." wrapText="true" />
+            <Label styleClass="auth-subtitle" text="Connect with licensed doctors remotely. Consultations, prescriptions, and hospital admissions, all in one place." wrapText="true" />
+
+            <VBox spacing="11">
+                <HBox alignment="CENTER_LEFT" spacing="9">
+                    <Label style="-fx-background-color: rgba(255,255,255,0.14); -fx-background-radius: 50; -fx-pref-width: 22; -fx-pref-height: 22; -fx-alignment: center; -fx-text-fill: white; -fx-font-size: 12;" text="✓" />
+                    <Label styleClass="auth-check" text="Symptoms routed to the right specialist" />
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="9">
+                    <Label style="-fx-background-color: rgba(255,255,255,0.14); -fx-background-radius: 50; -fx-pref-width: 22; -fx-pref-height: 22; -fx-alignment: center; -fx-text-fill: white; -fx-font-size: 12;" text="✓" />
+                    <Label styleClass="auth-check" text="Live chat, e-prescriptions and bed admission" />
+                </HBox>
+                <HBox alignment="CENTER_LEFT" spacing="9">
+                    <Label style="-fx-background-color: rgba(255,255,255,0.14); -fx-background-radius: 50; -fx-pref-width: 22; -fx-pref-height: 22; -fx-alignment: center; -fx-text-fill: white; -fx-font-size: 12;" text="✓" />
+                    <Label styleClass="auth-check" text="Patient, doctor and hospital — one system" />
+                </HBox>
+            </VBox>
+        </VBox>
+
+        <Region VBox.vgrow="ALWAYS" />
+
+        <Label styleClass="auth-footer" text="E-Healthcare Management Center · NDPR-compliant" />
+    </VBox>
+
+    <!-- RIGHT: Register form -->
+        <VBox alignment="CENTER" prefHeight="900.0" prefWidth="1083.0" styleClass="auth-right">
+            <VBox maxWidth="380" spacing="0">
+                <Label styleClass="auth-heading" text="Create account" />
+                <Label styleClass="auth-sub" text="Register to get started.">
+                    <VBox.margin><Insets bottom="20" /></VBox.margin>
+                </Label>
+
+                <!-- Segment toggle -->
+                <HBox alignment="CENTER" styleClass="segment-bar">
+                    <Button onAction="#goToLogin" styleClass="segment-btn" text="Log in" />
+                    <Button disable="true" styleClass="segment-btn-active" text="Register" />
+                </HBox>
+                <Region prefHeight="20" />
+
+                <!-- Role selector -->
+                <Label styleClass="field-label" text="I am a">
+                    <VBox.margin><Insets bottom="9" /></VBox.margin>
+                </Label>
+                <HBox fx:id="roleBar" spacing="9">
+                    <VBox fx:id="patientCard" alignment="CENTER" onMouseClicked="#selectPatient" styleClass="role-card-active" HBox.hgrow="ALWAYS">
+                        <Label styleClass="role-emoji" text="👤" />
+                        <Label styleClass="role-label" text="Patient" />
+                    </VBox>
+                    <VBox fx:id="doctorCard" alignment="CENTER" onMouseClicked="#selectDoctor" styleClass="role-card" HBox.hgrow="ALWAYS">
+                        <Label styleClass="role-emoji" text="🩺" />
+                        <Label styleClass="role-label" text="Doctor" />
+                    </VBox>
+                    <VBox fx:id="adminCard" alignment="CENTER" onMouseClicked="#selectAdmin" styleClass="role-card" HBox.hgrow="ALWAYS">
+                        <Label styleClass="role-emoji" text="🏥" />
+                        <Label styleClass="role-label" text="Hospital" />
+                    </VBox>
+                </HBox>
+                <Region prefHeight="18" />
+
+                <!-- Fields -->
+                <VBox spacing="13">
+                    <VBox spacing="6">
+                        <Label styleClass="field-label" text="Full name" />
+                        <TextField fx:id="nameField" promptText="Emeka Okafor" styleClass="text-input" />
+                    </VBox>
+                    <VBox fx:id="specialtyBox" managed="false" spacing="6" visible="false">
+                        <Label styleClass="field-label" text="Specialty" />
+                        <ComboBox fx:id="specialty" maxWidth="Infinity" promptText="Select your specialty..." styleClass="text-input" />
+                    </VBox>
+                    <VBox fx:id="licenseBox" managed="false" spacing="6" visible="false">
+                        <Label styleClass="field-label" text="License number" />
+                        <TextField fx:id="licenseField" promptText="MDCN/PUL/44821" styleClass="text-input" />
+                    </VBox>
+                    <VBox fx:id="hospitalBox" managed="false" spacing="6" visible="false">
+                        <Label styleClass="field-label" text="Hospital" />
+                        <ComboBox fx:id="hospitalCombo" maxWidth="Infinity" styleClass="text-input" />
+                    </VBox>
+                    <VBox spacing="6">
+                        <Label styleClass="field-label" text="Email" />
+                        <TextField fx:id="emailField" promptText="you@email.com" styleClass="text-input" />
+                    </VBox>
+                    <VBox spacing="6">
+                        <Label styleClass="field-label" text="Password" />
+                        <PasswordField fx:id="passwordField" promptText="••••••••" styleClass="text-input" />
+                    </VBox>
+                </VBox>
+                <Region prefHeight="18" />
+
+                <Button maxWidth="Infinity" onAction="#onSignup" styleClass="btn-primary" text="Create account" />
+
+                <Label fx:id="messageLabel" styleClass="error-label" wrapText="true">
+                    <VBox.margin><Insets top="12" /></VBox.margin>
+                </Label>
+
+                <Label alignment="CENTER" style="-fx-font-size: 12; -fx-text-fill: #9A9EA5; -fx-alignment: center;" text="Protected by end-to-end encryption">
+                    <VBox.margin><Insets top="12" /></VBox.margin>
+                </Label>
+            </VBox>
+        </VBox>
+</HBox>

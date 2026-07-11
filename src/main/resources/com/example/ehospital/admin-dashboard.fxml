@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<HBox prefHeight="900" prefWidth="1500" xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.ehospital.AdminDashboardController"
+      stylesheets="@styles.css">
+
+    <!-- SIDEBAR -->
+    <VBox styleClass="sidebar" spacing="3">
+        <HBox alignment="CENTER_LEFT" spacing="11">
+            <Label text="+" styleClass="sidebar-logo"/>
+            <Label text="E-Healthcare Management" styleClass="sidebar-brand"/>
+        </HBox>
+        <Region prefHeight="20"/>
+
+        <Button text="Transfer requests" styleClass="nav-item-active" maxWidth="Infinity"/>
+        <Button text="Patient records" styleClass="nav-item" maxWidth="Infinity" onAction="#goToRecords"/>
+        <Button text="Admission" styleClass="nav-item" maxWidth="Infinity" onAction="#goToAdmission"/>
+
+        <Region VBox.vgrow="ALWAYS"/>
+
+        <VBox styleClass="sidebar-divider" spacing="8">
+            <HBox alignment="CENTER_LEFT" spacing="11">
+                <Label fx:id="avatarLabel" styleClass="avatar, avatar-blue"/>
+                <VBox>
+                    <Label fx:id="userNameLabel" styleClass="sidebar-user-name"/>
+                    <Label text="Hospital Admin" styleClass="sidebar-user-sub"/>
+                </VBox>
+            </HBox>
+            <Button text="Log out" styleClass="btn-logout" onAction="#onLogout"/>
+        </VBox>
+    </VBox>
+
+    <!-- MAIN -->
+    <VBox HBox.hgrow="ALWAYS">
+        <HBox styleClass="topbar" alignment="CENTER_LEFT">
+            <VBox>
+                <Label text="Transfer Requests" styleClass="topbar-title"/>
+                <Label text="Manage incoming transfers" styleClass="topbar-sub"/>
+            </VBox>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Refresh" styleClass="btn-primary" style="-fx-background-color: #EDEAE2; -fx-text-fill: #4A4F57; -fx-font-size: 13; -fx-padding: 6 14;" onAction="#onRefresh"/>
+        </HBox>
+
+        <ScrollPane fitToWidth="true" style="-fx-background-color: #F4F1EC; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
+            <VBox styleClass="content-area" spacing="18">
+                <!-- Hospital stats bar -->
+                <HBox fx:id="statsBar" spacing="14" alignment="CENTER_LEFT" styleClass="card" style="-fx-padding: 14 20;">
+                    <Label fx:id="hospitalInfoLabel" style="-fx-font-size: 13; -fx-text-fill: #8A8F94; -fx-font-weight: bold;"/>
+                    <Region style="-fx-pref-width: 1; -fx-pref-height: 22; -fx-background-color: #E8E4DC;"/>
+                    <HBox spacing="22">
+                        <HBox spacing="4" alignment="CENTER_LEFT">
+                            <Label fx:id="totalBedsLabel" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
+                            <Label text="capacity" style="-fx-font-size: 12; -fx-text-fill: #9A9EA5;"/>
+                        </HBox>
+                        <HBox spacing="4" alignment="CENTER_LEFT">
+                            <Label fx:id="occupiedLabel" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #B14A33;"/>
+                            <Label text="occupied" style="-fx-font-size: 12; -fx-text-fill: #9A9EA5;"/>
+                        </HBox>
+                        <HBox spacing="4" alignment="CENTER_LEFT">
+                            <Label fx:id="freeBedsLabel" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #1F6E4F;"/>
+                            <Label text="beds free" style="-fx-font-size: 12; -fx-text-fill: #9A9EA5;"/>
+                        </HBox>
+                    </HBox>
+                </HBox>
+
+                <!-- Two column: inbox + detail -->
+                <HBox spacing="18">
+                    <!-- LEFT: Inbox list -->
+                    <VBox spacing="13" minWidth="340" maxWidth="380">
+                        <Label fx:id="inboxTitle" style="-fx-font-size: 13; -fx-font-weight: bold; -fx-text-fill: #8A8F94;" text="INCOMING REQUESTS"/>
+                        <VBox fx:id="inboxList" spacing="10">
+                            <Label text="No transfer requests yet." style="-fx-font-size: 14; -fx-text-fill: #9A9EA5;"/>
+                        </VBox>
+                    </VBox>
+
+                    <!-- RIGHT: Detail panel -->
+                    <VBox fx:id="detailPanel" HBox.hgrow="ALWAYS" visible="false" managed="false">
+                        <VBox styleClass="card" spacing="0">
+                            <!-- Header -->
+                            <VBox fx:id="detailHeader" style="-fx-padding: 22 24; -fx-border-color: #EDEAE2; -fx-border-width: 0 0 1 0;" spacing="16">
+                                <HBox spacing="13" alignment="CENTER_LEFT">
+                                    <Label fx:id="detailAvatar" style="-fx-background-color: #E9E7F7; -fx-text-fill: #4B3FA6; -fx-pref-width: 48; -fx-pref-height: 48; -fx-background-radius: 13; -fx-alignment: center; -fx-font-weight: bold; -fx-font-size: 15;"/>
+                                    <VBox HBox.hgrow="ALWAYS">
+                                        <Label fx:id="detailPatientName" style="-fx-font-size: 18; -fx-font-weight: bold;"/>
+                                        <Label fx:id="detailPatientInfo" style="-fx-font-size: 13; -fx-text-fill: #8A8F94;"/>
+                                    </VBox>
+                                    <VBox alignment="CENTER_RIGHT" spacing="7">
+                                        <Label fx:id="detailUrgencyPill" style="-fx-font-size: 11; -fx-font-weight: bold;"/>
+                                        <Label fx:id="detailStatusPill" style="-fx-font-size: 11; -fx-font-weight: bold;"/>
+                                    </VBox>
+                                </HBox>
+                                <HBox spacing="26">
+                                    <VBox spacing="2">
+                                        <Label text="REQUESTING DOCTOR" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #9A9EA5;"/>
+                                        <Label fx:id="detailDoctorName" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="FROM" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #9A9EA5;"/>
+                                        <Label text="E-Healthcare Management Center" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                                    </VBox>
+                                    <VBox spacing="2">
+                                        <Label text="RECEIVED" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #9A9EA5;"/>
+                                        <Label fx:id="detailDate" style="-fx-font-size: 13; -fx-font-weight: bold;"/>
+                                    </VBox>
+                                </HBox>
+                            </VBox>
+
+                            <!-- Body -->
+                            <VBox style="-fx-padding: 20 24;" spacing="18">
+                                <VBox spacing="7">
+                                    <Label text="REASON FOR TRANSFER" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #9A9EA5;"/>
+                                    <Label fx:id="detailReason" style="-fx-font-size: 14; -fx-text-fill: #3A3F47;" wrapText="true"/>
+                                </VBox>
+
+                                <VBox spacing="8">
+                                    <Label text="PATIENT FILE" style="-fx-font-size: 11; -fx-font-weight: bold; -fx-text-fill: #9A9EA5;"/>
+                                    <HBox fx:id="fileStatusBox" spacing="10" alignment="CENTER_LEFT" style="-fx-background-color: #FBFAF7; -fx-border-color: #EAE6DE; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 13 15;">
+                                        <Label fx:id="fileStatusLabel" style="-fx-font-size: 13; -fx-text-fill: #8A8F94;"/>
+                                        <Region HBox.hgrow="ALWAYS"/>
+                                        <Button fx:id="fileActionBtn" text="Request file" styleClass="btn-primary" style="-fx-font-size: 13; -fx-padding: 8 15;" visible="false" managed="false" onAction="#onRequestFile"/>
+                                    </HBox>
+                                </VBox>
+
+                                <!-- Action buttons -->
+                                <HBox fx:id="actionButtons" spacing="11" visible="false" managed="false">
+                                    <Button text="Accept transfer" onAction="#onAccept" HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                                            style="-fx-background-color: #127566; -fx-text-fill: white; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 13; -fx-background-radius: 11; -fx-cursor: hand; -fx-border-color: transparent;"/>
+                                    <Button text="Decline" onAction="#onDecline" HBox.hgrow="ALWAYS" maxWidth="Infinity"
+                                            style="-fx-background-color: white; -fx-text-fill: #9A4A36; -fx-font-size: 14; -fx-font-weight: bold; -fx-padding: 13; -fx-background-radius: 11; -fx-cursor: hand; -fx-border-color: #E6C7BF; -fx-border-width: 1.5;"/>
+                                </HBox>
+
+                                <HBox fx:id="resultBox" visible="false" managed="false" spacing="10" alignment="CENTER_LEFT" style="-fx-background-color: #EAF5EE; -fx-border-color: #BFE0CE; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 14 16;">
+                                    <Label fx:id="resultLabel" style="-fx-font-size: 13; -fx-text-fill: #1F6E4F; -fx-font-weight: bold;"/>
+                                    <Region HBox.hgrow="ALWAYS"/>
+                                    <Button fx:id="arrivedBtn" text="Mark as arrived" onAction="#onMarkArrived" visible="false" managed="false"
+                                            style="-fx-background-color: #4B3FA6; -fx-text-fill: white; -fx-font-size: 12; -fx-font-weight: bold; -fx-padding: 8 14; -fx-background-radius: 8; -fx-cursor: hand; -fx-border-color: transparent;"/>
+                                </HBox>
+                            </VBox>
+                        </VBox>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </VBox>
+</HBox>
